@@ -66,6 +66,8 @@
 
 ./rtos_start.c
 
+./task_at24c256.c
+
 ./task_i2c.c
 
 ./task_selftest.c
@@ -86,7 +88,7 @@
 
 ./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0/port.c
 
-./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/MemMang/heap_1.c
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/MemMang/heap_3.c
 
 ./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/queue.c
 
