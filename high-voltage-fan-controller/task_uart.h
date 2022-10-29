@@ -16,7 +16,7 @@ extern "C" {
 // Message struct type
 typedef struct uart_msg
 {
-	uint8_t			*msg;
+	char			*msg;
 	uint8_t			msg_len;
 	xTaskHandle		initiator;
 } uart_msg;
@@ -26,7 +26,7 @@ typedef struct uart_msg
 #define ERR_UART_RESP_BUF_TOO_SMALL	-1
 #define ERR_UART_QUEUE_FULL			-2
 
-int16_t write_uart(const char *msg, const uint8_t msg_len, const uint16_t timeout_millis);
+int16_t uart_write(char *msg, const uint8_t msg_len, const uint16_t timeout_millis);
 
 BaseType_t create_uart_task();
 

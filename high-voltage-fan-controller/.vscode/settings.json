@@ -1,0 +1,27 @@
+{
+    "files.associations": {
+        "hal_gpio.h": "c",
+        "atmel_start.h": "c",
+        "driver_init.h": "c",
+        "atmel_start_pins.h": "c",
+        "hpl_gpio.h": "c",
+        "compiler.h": "c",
+        "parts.h": "c",
+        "hri_d20.h": "c",
+        "hri_gclk_d20.h": "c",
+        "hri_dsu_d20.h": "c",
+        "hri_ac_d20.h": "c",
+        "task_at24c256.h": "c",
+        "rtos_start.h": "c",
+        "task_uart.h": "c",
+        "hal_spi_m_sync.h": "c",
+        "hal_usart_async.h": "c",
+        "hal_ext_irq.h": "c",
+        "hal_sleep.h": "c",
+        "hal_init.h": "c",
+        "freertos.h": "c",
+        "hal_atomic.h": "c",
+        "hal_delay.h": "c",
+        "hal_io.h": "c"
+    }
+}

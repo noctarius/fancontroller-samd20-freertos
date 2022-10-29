@@ -4,6 +4,7 @@
 
 #include "task_uart.h"
 #include "messages.h"
+#include <samd20e18.h>
 
 // Internal task pid
 static xTaskHandle task_uart_pid = NULL;
@@ -42,12 +43,12 @@ static void err_cb_USART_0(const struct usart_async_descriptor *const io_descr)
 	}
 }
 
-static void uart_write(const uint8_t *data, const uint8_t len)
+static void uart_write_0(const char *data, const uint8_t len)
 {
 	if (len > 0)
 	{
 		tx_in_progress = true;
-		io_write(io_usart0, data, len);
+		io_write(io_usart0, (uint8_t *)data, len);
 		while (SERCOM1->USART.INTFLAG.bit.TXC == 0)
 			vTaskDelay(ticks20ms);
 	}
@@ -68,7 +69,7 @@ static void uart_task(void *pvParameters)
 {
 	(void) pvParameters;
 	
-	uart_write(MSG_UART_START, MSG_UART_START_LEN);
+	uart_write_0(MSG_UART_START, MSG_UART_START_LEN);
 	
 	BaseType_t ret;
 	while (1)
@@ -77,7 +78,7 @@ static void uart_task(void *pvParameters)
 		{
 			if ((ret = xQueueReceive(msg_queue, &msg, 0)) == pdPASS)
 			{
-				uart_write(msg->msg, msg->msg_len);
+				uart_write_0(msg->msg, msg->msg_len);
 				
 				// Wait for write to finish
 				while (tx_in_progress)
@@ -94,12 +95,12 @@ static void uart_task(void *pvParameters)
 	vTaskDelete(NULL);
 }
 
-int16_t write_uart(const char *msg, const uint8_t msg_len, const uint16_t timeout_millis)
+int16_t uart_write(char *msg, const uint8_t msg_len, const uint16_t timeout_millis)
 {
 	xTaskHandle initiator = xTaskGetCurrentTaskHandle();
 	
 	struct uart_msg *new_msg = &(struct uart_msg) {
-		.msg = (uint8_t *) msg,
+		.msg = msg,
 		.msg_len = msg_len,
 		.initiator = initiator
 	};

@@ -18,7 +18,7 @@ static struct ds18b20_desc *sensors[5];
 
 static inline void scan_for_sensor()
 {
-	write_uart(MSG_SENSOR_SEARCH, MSG_SENSOR_SEARCH_LEN, 1000);
+	uart_write(MSG_SENSOR_SEARCH, MSG_SENSOR_SEARCH_LEN, 1000);
 
 	onewire_search_t search;
 	onewire_search_start(&OW_1, &search);
@@ -32,8 +32,8 @@ static inline void scan_for_sensor()
 
 		addr = onewire_search_next(&search);
 		char buffer[18];
-		int len = freertos_sprintf(&buffer, "%d\r\n", addr);
-		write_uart(buffer, len, 1000);
+		int len = freertos_sprintf(&buffer[0], "%d\r\n", addr);
+		uart_write(buffer, len, 1000);
 
 		if (addr == ONEWIRE_NONE)
 		{

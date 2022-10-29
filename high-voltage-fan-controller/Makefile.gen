@@ -1,0 +1,526 @@
+ADDITIONAL_DEPENDENCIES :=
+EXECUTABLES :=
+LIB_DEP :=
+LIBS :=
+USER_OBJS :=
+OUTPUT_FILE_PATH :=
+OUTPUT_FILE_PATH +=build.elf
+OUTPUT_FILE_PATH_AS_ARGS +=build.elf
+OUTPUT_FILE_DEP:= ./makedep.mk
+
+SUBDIRS := \
+Config/ \
+Device_Startup/ \
+documentation/ \
+examples/ \
+hal/ \
+hal/documentation/ \
+hal/include/ \
+hal/src/ \
+hal/utils/ \
+hal/utils/include/ \
+hal/utils/src/ \
+hpl/ \
+hpl/core/ \
+hpl/eic/ \
+hpl/gclk/ \
+hpl/pm/ \
+hpl/port/ \
+hpl/sercom/ \
+hpl/sysctrl/ \
+hpl/wdt/ \
+hri/ \
+thirdparty/ \
+thirdparty/RTOS/ \
+thirdparty/RTOS/freertos/ \
+thirdparty/RTOS/freertos/FreeRTOSV10.0.0/ \
+thirdparty/RTOS/freertos/FreeRTOSV10.0.0/License/ \
+thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/ \
+thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include/ \
+thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/ \
+thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ \
+thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0/ \
+thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/MemMang/
+
+C_SRCS += \
+./at24c256.c \
+./atmel_start.c \
+./Device_Startup/startup_samd20.c \
+./Device_Startup/system_samd20.c \
+./driver_init.c \
+./ds18b20.c \
+./examples/driver_examples.c \
+./hal/src/hal_atomic.c \
+./hal/src/hal_delay.c \
+./hal/src/hal_ext_irq.c \
+./hal/src/hal_gpio.c \
+./hal/src/hal_i2c_m_async.c \
+./hal/src/hal_init.c \
+./hal/src/hal_io.c \
+./hal/src/hal_sleep.c \
+./hal/src/hal_spi_m_sync.c \
+./hal/src/hal_usart_async.c \
+./hal/src/hal_wdt.c \
+./hal/utils/src/utils_assert.c \
+./hal/utils/src/utils_event.c \
+./hal/utils/src/utils_list.c \
+./hal/utils/src/utils_ringbuffer.c \
+./hal/utils/src/utils_syscalls.c \
+./hpl/core/hpl_core_m0plus_base.c \
+./hpl/core/hpl_init.c \
+./hpl/eic/hpl_eic.c \
+./hpl/gclk/hpl_gclk.c \
+./hpl/pm/hpl_pm.c \
+./hpl/sercom/hpl_sercom.c \
+./hpl/sysctrl/hpl_sysctrl.c \
+./hpl/wdt/hpl_wdt.c \
+./main.c \
+./onewire.c \
+./rtos_start.c \
+./task_i2c.c \
+./task_selftest.c \
+./task_temperature.c \
+./task_uart.c \
+./task_watchdog.c \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/rtos_port.c \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/croutine.c \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/event_groups.c \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/list.c \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0/port.c \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/MemMang/heap_1.c \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/queue.c \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/stream_buffer.c \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/tasks.c \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/timers.c
+
+OBJS += \
+./at24c256.o \
+./atmel_start.o \
+./Device_Startup/startup_samd20.o \
+./Device_Startup/system_samd20.o \
+./driver_init.o \
+./ds18b20.o \
+./examples/driver_examples.o \
+./hal/src/hal_atomic.o \
+./hal/src/hal_delay.o \
+./hal/src/hal_ext_irq.o \
+./hal/src/hal_gpio.o \
+./hal/src/hal_i2c_m_async.o \
+./hal/src/hal_init.o \
+./hal/src/hal_io.o \
+./hal/src/hal_sleep.o \
+./hal/src/hal_spi_m_sync.o \
+./hal/src/hal_usart_async.o \
+./hal/src/hal_wdt.o \
+./hal/utils/src/utils_assert.o \
+./hal/utils/src/utils_event.o \
+./hal/utils/src/utils_list.o \
+./hal/utils/src/utils_ringbuffer.o \
+./hal/utils/src/utils_syscalls.o \
+./hpl/core/hpl_core_m0plus_base.o \
+./hpl/core/hpl_init.o \
+./hpl/eic/hpl_eic.o \
+./hpl/gclk/hpl_gclk.o \
+./hpl/pm/hpl_pm.o \
+./hpl/sercom/hpl_sercom.o \
+./hpl/sysctrl/hpl_sysctrl.o \
+./hpl/wdt/hpl_wdt.o \
+./main.o \
+./onewire.o \
+./rtos_start.o \
+./task_i2c.o \
+./task_selftest.o \
+./task_temperature.o \
+./task_uart.o \
+./task_watchdog.o \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/rtos_port.o \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/croutine.o \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/event_groups.o \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/list.o \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0/port.o \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/MemMang/heap_1.o \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/queue.o \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/stream_buffer.o \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/tasks.o \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/timers.o
+
+C_DEPS_AS_ARGS += \
+./at24c256.d \
+./atmel_start.d \
+./Device_Startup/startup_samd20.d \
+./Device_Startup/system_samd20.d \
+./driver_init.d \
+./ds18b20.d \
+./examples/driver_examples.d \
+./hal/src/hal_atomic.d \
+./hal/src/hal_delay.d \
+./hal/src/hal_ext_irq.d \
+./hal/src/hal_gpio.d \
+./hal/src/hal_i2c_m_async.d \
+./hal/src/hal_init.d \
+./hal/src/hal_io.d \
+./hal/src/hal_sleep.d \
+./hal/src/hal_spi_m_sync.d \
+./hal/src/hal_usart_async.d \
+./hal/src/hal_wdt.d \
+./hal/utils/src/utils_assert.d \
+./hal/utils/src/utils_event.d \
+./hal/utils/src/utils_list.d \
+./hal/utils/src/utils_ringbuffer.d \
+./hal/utils/src/utils_syscalls.d \
+./hpl/core/hpl_core_m0plus_base.d \
+./hpl/core/hpl_init.d \
+./hpl/eic/hpl_eic.d \
+./hpl/gclk/hpl_gclk.d \
+./hpl/pm/hpl_pm.d \
+./hpl/sercom/hpl_sercom.d \
+./hpl/sysctrl/hpl_sysctrl.d \
+./hpl/wdt/hpl_wdt.d \
+./main.d \
+./onewire.d \
+./rtos_start.d \
+./task_i2c.d \
+./task_selftest.d \
+./task_temperature.d \
+./task_uart.d \
+./task_watchdog.d \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/rtos_port.d \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/croutine.d \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/event_groups.d \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/list.d \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0/port.d \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/MemMang/heap_1.d \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/queue.d \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/stream_buffer.d \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/tasks.d \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/timers.d
+
+OBJS_AS_ARGS += \
+./at24c256.o \
+./atmel_start.o \
+./Device_Startup/startup_samd20.o \
+./Device_Startup/system_samd20.o \
+./driver_init.o \
+./ds18b20.o \
+./examples/driver_examples.o \
+./hal/src/hal_atomic.o \
+./hal/src/hal_delay.o \
+./hal/src/hal_ext_irq.o \
+./hal/src/hal_gpio.o \
+./hal/src/hal_i2c_m_async.o \
+./hal/src/hal_init.o \
+./hal/src/hal_io.o \
+./hal/src/hal_sleep.o \
+./hal/src/hal_spi_m_sync.o \
+./hal/src/hal_usart_async.o \
+./hal/src/hal_wdt.o \
+./hal/utils/src/utils_assert.o \
+./hal/utils/src/utils_event.o \
+./hal/utils/src/utils_list.o \
+./hal/utils/src/utils_ringbuffer.o \
+./hal/utils/src/utils_syscalls.o \
+./hpl/core/hpl_core_m0plus_base.o \
+./hpl/core/hpl_init.o \
+./hpl/eic/hpl_eic.o \
+./hpl/gclk/hpl_gclk.o \
+./hpl/pm/hpl_pm.o \
+./hpl/sercom/hpl_sercom.o \
+./hpl/sysctrl/hpl_sysctrl.o \
+./hpl/wdt/hpl_wdt.o \
+./main.o \
+./onewire.o \
+./rtos_start.o \
+./task_i2c.o \
+./task_selftest.o \
+./task_temperature.o \
+./task_uart.o \
+./task_watchdog.o \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/rtos_port.o \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/croutine.o \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/event_groups.o \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/list.o \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0/port.o \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/MemMang/heap_1.o \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/queue.o \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/stream_buffer.o \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/tasks.o \
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/timers.o
+
+LINKER_SCRIPT_DEP += \
+Device_Startup/samd20e18_flash.ld \
+Device_Startup/samd20e18_sram.ld
+
+./at24c256.o: ./at24c256.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./atmel_start.o: ./atmel_start.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./Device_Startup/startup_samd20.o: ./Device_Startup/startup_samd20.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./Device_Startup/system_samd20.o: ./Device_Startup/system_samd20.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./driver_init.o: ./driver_init.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./ds18b20.o: ./ds18b20.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./examples/driver_examples.o: ./examples/driver_examples.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hal/src/hal_atomic.o: ./hal/src/hal_atomic.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hal/src/hal_delay.o: ./hal/src/hal_delay.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hal/src/hal_ext_irq.o: ./hal/src/hal_ext_irq.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hal/src/hal_gpio.o: ./hal/src/hal_gpio.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hal/src/hal_i2c_m_async.o: ./hal/src/hal_i2c_m_async.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hal/src/hal_init.o: ./hal/src/hal_init.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hal/src/hal_io.o: ./hal/src/hal_io.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hal/src/hal_sleep.o: ./hal/src/hal_sleep.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hal/src/hal_spi_m_sync.o: ./hal/src/hal_spi_m_sync.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hal/src/hal_usart_async.o: ./hal/src/hal_usart_async.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hal/src/hal_wdt.o: ./hal/src/hal_wdt.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hal/utils/src/utils_assert.o: ./hal/utils/src/utils_assert.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hal/utils/src/utils_event.o: ./hal/utils/src/utils_event.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hal/utils/src/utils_list.o: ./hal/utils/src/utils_list.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hal/utils/src/utils_ringbuffer.o: ./hal/utils/src/utils_ringbuffer.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hal/utils/src/utils_syscalls.o: ./hal/utils/src/utils_syscalls.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hpl/core/hpl_core_m0plus_base.o: ./hpl/core/hpl_core_m0plus_base.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hpl/core/hpl_init.o: ./hpl/core/hpl_init.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hpl/eic/hpl_eic.o: ./hpl/eic/hpl_eic.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hpl/gclk/hpl_gclk.o: ./hpl/gclk/hpl_gclk.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hpl/pm/hpl_pm.o: ./hpl/pm/hpl_pm.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hpl/sercom/hpl_sercom.o: ./hpl/sercom/hpl_sercom.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hpl/sysctrl/hpl_sysctrl.o: ./hpl/sysctrl/hpl_sysctrl.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./hpl/wdt/hpl_wdt.o: ./hpl/wdt/hpl_wdt.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./main.o: ./main.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./onewire.o: ./onewire.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./rtos_start.o: ./rtos_start.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./task_i2c.o: ./task_i2c.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./task_selftest.o: ./task_selftest.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./task_temperature.o: ./task_temperature.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./task_uart.o: ./task_uart.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./task_watchdog.o: ./task_watchdog.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/rtos_port.o: ./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/rtos_port.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/croutine.o: ./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/croutine.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/event_groups.o: ./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/event_groups.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/list.o: ./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/list.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0/port.o: ./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0/port.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/MemMang/heap_1.o: ./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/MemMang/heap_1.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/queue.o: ./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/queue.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/stream_buffer.o: ./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/stream_buffer.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/tasks.o: ./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/tasks.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/timers.o: ./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/timers.c
+	@echo Building file: $<
+	@/Applications/ARM/bin/arm-none-eabi-gcc -x c -DNDEBUG -I"/Users/noctarius/cmsis/ARM/CMSIS/5.9.0/CMSIS/Core/Include" -I"./Config" -I"./" -I"./examples" -I"./hal/include" -I"./hal/utils/include" -I"./hpl/core" -I"./hpl/eic" -I"./hpl/gclk" -I"./hpl/pm" -I"./hpl/port" -I"./hpl/sercom" -I"./hpl/sysctrl" -I"./hpl/wdt" -I"./hri" -I"./thirdparty/RTOS" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/include" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0" -I"./thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config" -I"/Users/noctarius/Downloads/Atmel.SAMD20_DFP.1.3.165/samd20/include" -std=gnu99 -ffunction-sections -D__SAMD20E18__ -mcpu=cortex-m0plus -mlong-calls -Wall -Os -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -o "$@" "$<" 
+	@echo Finished building: $<
+
+
+ifneq ($(MAKECMDGOALS),clean)
+ifneq ($(strip $(C_DEPS)),)
+-include $(C_DEPS)
+endif
+endif
+
+all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)
+
+$(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP) $(LINKER_SCRIPT_DEP)
+	@echo Building target: $@
+	/Applications/ARM/bin/arm-none-eabi-gcc -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="build.map" -L"./Device_Startup" -Wl,--start-group -Wl,--end-group -Wl,-lm -lm -mthumb -mcpu=cortex-m0plus --specs=nano.specs -Wl,--gc-sections -Tsamd20e18_flash.ld
+	/Applications/ARM/bin/arm-none-eabi-objcopy -O ihex -R .eeprom -R .fuse -R .lock -R .signature  "build.elf" "build.hex"
+	/Applications/ARM/bin/arm-none-eabi-objdump -h -S "build.elf" > "build.lss"
+	/Applications/ARM/bin/arm-none-eabi-objcopy -j .eeprom --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0 --no-change-warnings -O binary "build.elf" "build.eep" || exit 0
+	/Applications/ARM/bin/arm-none-eabi-objcopy -O binary "build.elf" "build.bin"
+	/Applications/ARM/bin/arm-none-eabi-objcopy -O srec -R .eeprom -R .fuse -R .lock -R .signature  "build.elf" "build.srec"
+	/Applications/ARM/bin/arm-none-eabi-size "build.elf"
+	@echo Finished successfully: $@
+
+clean:
+	-rm -rf $(OBJS_AS_ARGS) $(EXECUTABLES)
+	-rm -rf $(C_DEPS_AS_ARGS)
+	-rm -rf build.hex
+	-rm -rf build.lss
+	-rm -rf build.eep
+	-rm -rf build.bin
+	-rm -rf build.srec
+	-rm -rf build.elf build.a build.map

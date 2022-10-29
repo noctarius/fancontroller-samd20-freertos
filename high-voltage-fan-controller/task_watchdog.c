@@ -11,12 +11,12 @@ static xTaskHandle task_watchdog_pid = NULL;
 
 static void watchdog_task(void *pvParameters)
 {
-	write_uart(MSG_WATCHDOG_START, MSG_WATCHDOG_START_LEN, 1000);
+	uart_write(MSG_WATCHDOG_START, MSG_WATCHDOG_START_LEN, 1000);
 	
 	while (1)
 	{	
 		wdt_feed(&WDT_0);
-		write_uart(MSG_WATCHDOG_FED, MSG_WATCHDOG_FED_LEN, 1000);
+		uart_write(MSG_WATCHDOG_FED, MSG_WATCHDOG_FED_LEN, 1000);
 		vTaskDelay(ticks10s);
 	}
 }
@@ -29,7 +29,7 @@ BaseType_t create_wdog_task()
 
 void init_wdog_task()
 {
-	wdt_set_timeout_period(&WDT_0, configTICK_RATE_HZ, 200000);
+	wdt_set_timeout_period(&WDT_0, configTICK_RATE_HZ, 65535);
 	wdt_feed(&WDT_0);
 	wdt_enable(&WDT_0);
 }

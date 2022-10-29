@@ -151,12 +151,13 @@ static void i2c_task(void *pvParameters)
 	}
 }
 
-static int16_t enqueue(const bool read, const bool reg, const uint8_t addr, const uint16_t reg_addr, const uint8_t *data, const uint16_t count, const uint16_t timeout_millis)
+static int16_t i2c_enqueue(const bool read, const bool reg, const uint8_t addr, const uint16_t reg_addr, const uint8_t *data, const uint16_t count, const uint16_t timeout_millis)
 {
 	// Store for notification
 	xTaskHandle initiator = xTaskGetCurrentTaskHandle();
 	
-	struct i2c_msg *msg = &(struct i2c_msg) {
+	struct i2c_msg *msg = &(struct i2c_msg)
+	{
 		.addr = addr,
 		.reg_addr = reg_addr,
 		.read = read,
@@ -185,22 +186,22 @@ static int16_t enqueue(const bool read, const bool reg, const uint8_t addr, cons
 
 void i2c_write(const uint8_t addr, const uint8_t *data, const uint16_t count)
 {
-	enqueue(false, false, addr, 0, data, count, 100);
+	i2c_enqueue(false, false, addr, 0, data, count, 100);
 }
 
 void i2c_write_reg(const uint8_t addr, const uint16_t reg_addr, const uint8_t *data, const uint16_t count)
 {
-	enqueue(false, true, addr, reg_addr, data, count, 100);
+	i2c_enqueue(false, true, addr, reg_addr, data, count, 100);
 }
 
 void i2c_read(const uint8_t addr, const uint8_t *data, const uint16_t count)
 {
-	enqueue(false, true, addr, 0, data, count, 100);
+	i2c_enqueue(false, true, addr, 0, data, count, 100);
 }
 
 void i2c_read_reg(const uint8_t addr, const uint16_t reg_addr, const uint8_t *data, const uint16_t count)
 {
-	enqueue(true, true, addr, reg_addr, data, count, 100);
+	i2c_enqueue(true, true, addr, reg_addr, data, count, 100);
 }
 
 BaseType_t create_i2c_task()

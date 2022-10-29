@@ -17,7 +17,7 @@
 // Enabled subsystems
 #define TASK_ENABLE_UART		1
 #define TASK_ENABLE_DS18B20		1
-#define TASK_ENABLE_I2C			0
+#define TASK_ENABLE_I2C			1
 #define TASK_ENABLE_AT24C256	0
 #define TASK_ENABLE_WATCHDOG	0
 #define TASK_ENABLE_MONITOR		0
