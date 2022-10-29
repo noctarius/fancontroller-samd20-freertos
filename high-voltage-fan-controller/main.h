@@ -5,6 +5,9 @@
 #ifndef __MAIN_H__
 #define __MAIN_H__
 
+//#define configASSERT 1
+#define configENABLE_ERRATA_837070_WORKAROUND 1
+
 #include <atmel_start.h>
 #include <FreeRTOS.h>
 #include <task.h>

@@ -25,7 +25,7 @@ bool ds18b20_get_reading(struct ds18b20_desc *dev)
 	
 	if (!onewire_select(dev->ow, dev->addr)) return false;
 	
-	if (!onewire_write(dev->ow, 0x44)) return false;
+	if (!onewire_write(dev->ow, 0xBE)) return false;
 	
 	uint8_t scratchpad[9];
 	if (!onewire_read_bytes(dev->ow, scratchpad, 9)) return false;
@@ -41,11 +41,12 @@ bool ds18b20_get_reading(struct ds18b20_desc *dev)
 		raw = raw & ~1;
 		
 	dev->valid = true;
-	dev->reading = raw * 0.0625;
-	if (dev->reading < -25 || dev->reading > 125)
+	double reading = raw * 0.0625;
+	if (reading < -25. || reading > 125.)
 	{
 		dev->reading = 0;
 		dev->valid = false;
 	}
+	dev->reading = (uint16_t) (reading * 100);
 	return true;
 }

@@ -4,12 +4,13 @@ void exceptionHandler(uint32_t blinkMillis)
 {
 	kill_wdog_task();
 
-	gpio_set_pin_level(LED_1_R, false);
-	gpio_set_pin_level(LED_1_G, false);
-	gpio_set_pin_level(LED_1_B, false);
-	gpio_set_pin_level(LED_2_R, false);
-	gpio_set_pin_level(LED_2_G, false);
-	gpio_set_pin_level(LED_2_B, false);
+	// Clear LED status
+	gpio_set_pin_level(LED_1_R, true);
+	gpio_set_pin_level(LED_1_G, true);
+	gpio_set_pin_level(LED_1_B, true);
+	gpio_set_pin_level(LED_2_R, true);
+	gpio_set_pin_level(LED_2_G, true);
+	gpio_set_pin_level(LED_2_B, true);
 
 	while(1)
 	{
@@ -22,9 +23,13 @@ void exceptionHandler(uint32_t blinkMillis)
 int main(void)
 {
 	BaseType_t ret;
-	
+
 	// Initialize components configured through ASF
 	atmel_start_init();
+
+	// Switch off relays
+	gpio_set_pin_level(SWITCH_FAN_S1, false);
+	gpio_set_pin_level(SWITCH_FAN_S2, false);
 
 	// Clear LED status
 	gpio_set_pin_level(LED_1_R, true);
@@ -33,10 +38,6 @@ int main(void)
 	gpio_set_pin_level(LED_2_R, true);
 	gpio_set_pin_level(LED_2_G, true);
 	gpio_set_pin_level(LED_2_B, true);
-
-	// Switch off relays
-	gpio_set_pin_level(SWITCH_FAN_S1, false);
-	gpio_set_pin_level(SWITCH_FAN_S2, false);
 
 #if TASK_ENABLE_UART
 	// Initialize uart
@@ -111,4 +112,9 @@ void vApplicationStackOverflowHook(TaskHandle_t *pxTask, signed char *pcTaskName
 void vApplicationMallocFailedHook(TaskHandle_t *pxTask, signed char *pcTaskName)
 {
 	exceptionHandler(200);
+}
+
+void vAssertCalled(char *file, uint32_t line)
+{
+	
 }

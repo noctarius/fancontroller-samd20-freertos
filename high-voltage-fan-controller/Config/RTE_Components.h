@@ -39,7 +39,7 @@
  *
  * \acme_license_stop
  *
- * Project: High Voltage Fan Controller
+ * Project: high-voltage-fan-controller
  * Target:  ATSAMD20E18 
  *
  **/

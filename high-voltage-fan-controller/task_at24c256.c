@@ -21,8 +21,7 @@ static void at24_task(void *pvParameters)
     struct at24c256_desc dev =
     {
         addr: 0x50,
-    };
-    
+    };  
 
 	BaseType_t ret;
     struct at24_msg msg;
@@ -32,16 +31,16 @@ static void at24_task(void *pvParameters)
         {
             if (msg.read)
             {
-                at24_read(msg.reg_addr, msg.data, msg.data_len, 1000);
+                at24c256_read(&dev, msg.reg_addr, msg.data, msg.data_len);
 
             } else {
-                at24_write(msg.reg_addr, msg.data, msg.data_len, 1000);
+                at24c256_write(&dev, msg.reg_addr, msg.data, msg.data_len);
             }
         }
     }
 }
 
-static void at24_enqueue(bool read, const uint16_t reg_addr, const uint8_t *data, const uint16_t count, const uint16_t timeout_millis)
+static int at24_enqueue(bool read, const uint16_t reg_addr, const uint8_t *data, const uint16_t count, const uint16_t timeout_millis)
 {
     // Store for notification
 	xTaskHandle initiator = xTaskGetCurrentTaskHandle();
@@ -65,35 +64,35 @@ static void at24_enqueue(bool read, const uint16_t reg_addr, const uint8_t *data
 	uint32_t notificationValue = ulTaskNotifyTake(pdFALSE, pdMS_TO_TICKS(timeout_millis - 100));
 	if (notificationValue == 1)
 	{
-		return;
+		return count;
 	}
 	
 	// Timeout
 	return ERR_TIMEOUT;
 }
 
-void at24_write(const uint16_t reg_addr, const uint8_t *data, const uint16_t count, const uint16_t timeout_millis)
+int at24_write(const uint16_t reg_addr, const uint8_t *data, const uint16_t count, const uint16_t timeout_millis)
 {
-    at24_enqueue(false, reg_addr, data, count, timeout_millis);
+    return at24_enqueue(false, reg_addr, data, count, timeout_millis);
 }
 
-void at24_read(const uint16_t reg_addr, const uint8_t *data, const uint16_t count, const uint16_t timeout_millis)
+int at24_read(const uint16_t reg_addr, const uint8_t *data, const uint16_t count, const uint16_t timeout_millis)
 {
-    at24_enqueue(true, reg_addr, data, count, timeout_millis);
+    return at24_enqueue(true, reg_addr, data, count, timeout_millis);
 }
 
-BaseType_t create_at24c256_task()
+BaseType_t create_at24_task()
 {
 	if (task_at24c256_pid != NULL) return pdFAIL;
 	return xTaskCreate(at24_task, "SELFTEST", TASK_AT24C256_STACK_SIZE, NULL, 2, task_at24c256_pid);	
 }
 
-void init_at24c256_task()
+void init_at24_task()
 {
-
+	
 }
 
-void kill_at24c256_task()
+void kill_at24_task()
 {
 	if (task_at24c256_pid == NULL) return;
 	vTaskDelete(task_at24c256_pid);

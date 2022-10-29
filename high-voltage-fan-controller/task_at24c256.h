@@ -25,15 +25,15 @@ typedef struct at24_msg
     xTaskHandle		initiator;
 } at24_msg;
 
-void at24_write(const uint16_t reg_addr, const uint8_t *data, const uint16_t count, const uint16_t timeout_millis);
+int at24_write(const uint16_t reg_addr, const uint8_t *data, const uint16_t count, const uint16_t timeout_millis);
 
-void at24_read(const uint16_t reg_addr, const uint8_t *data, const uint16_t count, const uint16_t timeout_millis);
+int at24_read(const uint16_t reg_addr, const uint8_t *data, const uint16_t count, const uint16_t timeout_millis);
 
-BaseType_t create_at24c256_task();
+BaseType_t create_at24_task();
 
-void init_at24c256_task();
+void init_at24_task();
 
-void kill_at24c256_task();
+void kill_at24_task();
 
 #ifdef __cplusplus
 }

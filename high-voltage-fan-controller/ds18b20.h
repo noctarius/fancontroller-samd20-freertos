@@ -13,9 +13,10 @@ extern "C" {
 #endif
 
 struct ds18b20_desc {
-	double reading;
-	const onewire_addr_t addr;
-	struct onewire_desc * const ow;
+	bool avail;
+	uint16_t reading;
+	onewire_addr_t addr;
+	struct onewire_desc * ow;
 	bool valid;
 };
 

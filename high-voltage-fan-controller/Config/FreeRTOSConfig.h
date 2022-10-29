@@ -46,7 +46,7 @@ void assert_triggered(const char *file, uint32_t line);
 // <i> Default: 2400
 // <id> freertos_total_heap_size
 #ifndef configTOTAL_HEAP_SIZE
-#define configTOTAL_HEAP_SIZE ((size_t)(2400))
+#define configTOTAL_HEAP_SIZE ((size_t)(4800))
 #endif
 
 // <q> Enable mutex
@@ -66,7 +66,7 @@ void assert_triggered(const char *file, uint32_t line);
 // <e> Advanced
 // <id> freertos_advanced
 #ifndef FREERTOS_ADVANCED_CONFIG
-#define FREERTOS_ADVANCED_CONFIG 1
+#define FREERTOS_ADVANCED_CONFIG 0
 #endif
 
 // <q> Enable preemption
@@ -96,7 +96,7 @@ void assert_triggered(const char *file, uint32_t line);
 // <q> Check stack overflow
 // <id> freertos_check_for_stack_overflow
 #ifndef configCHECK_FOR_STACK_OVERFLOW
-#define configCHECK_FOR_STACK_OVERFLOW 1
+#define configCHECK_FOR_STACK_OVERFLOW 2
 #endif
 
 // <q> Use maclloc failed hook

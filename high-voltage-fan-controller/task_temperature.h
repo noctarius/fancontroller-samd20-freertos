@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-#define TASK_TEMPERATURE_STACK_SIZE configMINIMAL_STACK_SIZE
+#define TASK_TEMPERATURE_STACK_SIZE 96
 
 struct ds18b20_desc *get_temperature_sensor(uint8_t idx);
 

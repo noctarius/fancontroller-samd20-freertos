@@ -12,9 +12,9 @@
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>High Voltage Fan Controller</AssemblyName>
-    <Name>High Voltage Fan Controller</Name>
-    <RootNamespace>High Voltage Fan Controller</RootNamespace>
+    <AssemblyName>high-voltage-fan-controller</AssemblyName>
+    <Name>high-voltage-fan-controller</Name>
+    <RootNamespace>high-voltage-fan-controller</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
@@ -147,7 +147,7 @@
           <AcmeProjectActionInfo Action="File" Source="thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/IAR/ARM_CM0/port.c" IsConfig="false" Hash="BuLnQxz1tnCaaDKjQnvqDQ" />
           <AcmeProjectActionInfo Action="File" Source="thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/IAR/ARM_CM0/portasm.s" IsConfig="false" Hash="JKO9fJQnLD8rQpBFQnodbg" />
           <AcmeProjectActionInfo Action="File" Source="thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/IAR/ARM_CM0/portmacro.h" IsConfig="false" Hash="NbnI+z6AP000BqeZJ6DT4w" />
-          <AcmeProjectActionInfo Action="File" Source="thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/MemMang/heap_1.c" IsConfig="false" Hash="TTd3FCRIoKpzoc73SCkIOQ" />
+          <AcmeProjectActionInfo Action="File" Source="thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/MemMang/heap_3.c" IsConfig="false" Hash="drL6sQ3Hb93UOAgf/QYzqw" />
           <AcmeProjectActionInfo Action="File" Source="thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/RVDS/ARM_CM0/port.c" IsConfig="false" Hash="xSb4QZfq5JwtDQH1fIq6gA" />
           <AcmeProjectActionInfo Action="File" Source="thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/RVDS/ARM_CM0/portmacro.h" IsConfig="false" Hash="UYJCiuYf7aPFDgFtuI6fmg" />
           <AcmeProjectActionInfo Action="File" Source="thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/queue.c" IsConfig="false" Hash="BmxGae1F/K8u7s8IWQPgQw" />
@@ -201,7 +201,7 @@
           <AcmeProjectActionInfo Action="File" Source="config/hpl_sysctrl_config.h" IsConfig="true" Hash="k12NBEt2aJu3NVVdQls3Bw" />
           <AcmeProjectActionInfo Action="File" Source="config/hpl_wdt_config.h" IsConfig="true" Hash="VXmGlmqnP+df3XbIaFBshg" />
           <AcmeProjectActionInfo Action="File" Source="config/peripheral_clk_config.h" IsConfig="true" Hash="0q/oUmu5/9kzbDJjhBLP3w" />
-          <AcmeProjectActionInfo Action="File" Source="config/FreeRTOSConfig.h" IsConfig="true" Hash="NQgm+kAsjBu+s6paamAPYA" />
+          <AcmeProjectActionInfo Action="File" Source="config/FreeRTOSConfig.h" IsConfig="true" Hash="wkmTsq93/RpPO42Ph2vZ5A" />
         </AcmeActionInfos>
         <NonsecureFilesInfo />
       </AcmeProjectConfig>
@@ -825,6 +825,12 @@
     <Compile Include="rtos_start.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="task_at24c256.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="task_at24c256.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="task_i2c.c">
       <SubType>compile</SubType>
     </Compile>
@@ -924,7 +930,7 @@
     <Compile Include="thirdparty\RTOS\freertos\FreeRTOSV10.0.0\Source\portable\GCC\ARM_CM0\portmacro.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="thirdparty\RTOS\freertos\FreeRTOSV10.0.0\Source\portable\MemMang\heap_1.c">
+    <Compile Include="thirdparty\RTOS\freertos\FreeRTOSV10.0.0\Source\portable\MemMang\heap_3.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="thirdparty\RTOS\freertos\FreeRTOSV10.0.0\Source\queue.c">

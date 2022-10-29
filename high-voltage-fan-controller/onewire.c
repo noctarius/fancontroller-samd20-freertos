@@ -252,7 +252,7 @@ void onewire_search_prefix(onewire_search_t *search, uint8_t family_code)
 
 onewire_addr_t onewire_search_next(onewire_search_t *search)
 {
-	uint8_t id_bit_number = 1, last_zero = 0, rom_byte_number = 0, rom_byte_mask = 1, search_result;
+	uint8_t id_bit_number = 1, last_zero = 0, rom_byte_number = 0, rom_byte_mask = 1, search_result = 0;
 	int id_bit, cmp_id_bit, dir;
 	
 	if (!search->last_device_found)
@@ -315,22 +315,35 @@ onewire_addr_t onewire_search_next(onewire_search_t *search)
 		}
 	}
 
-	if (search_result && search->rom_no[0] &&
-		(search->rom_no[7] == onewire_crc8(search->rom_no, 7)))
+	uint8_t crc8 = onewire_crc8(search->rom_no, 7);
+	uint8_t rom0 = search->rom_no[0];
+	uint8_t rom1 = search->rom_no[1];
+	uint8_t rom2 = search->rom_no[2];
+	uint8_t rom3 = search->rom_no[3];
+	uint8_t rom4 = search->rom_no[4];
+	uint8_t rom5 = search->rom_no[5];
+	uint8_t rom6 = search->rom_no[6];
+	uint8_t rom7 = search->rom_no[7];
+	
+	if (search_result == 0 || rom0 == 0 || rom7 != crc8)
 	{
-		onewire_addr_t addr = 0;
-		for (rom_byte_number = 7; rom_byte_number >= 0; rom_byte_number--)
-			addr = (addr << 8) | search->rom_no[rom_byte_number];
-
-		return addr;
+		search->last_discrepancy = 0;
+		search->last_device_found = false;
+		return ONEWIRE_NONE;
 	}
 
-	search->last_discrepancy = 0;
-	search->last_device_found = false;
-	return ONEWIRE_NONE;
+	onewire_addr_t addr = (uint64_t) rom7;
+	addr = (addr << 8) | (uint64_t) rom6;
+	addr = (addr << 8) | (uint64_t) rom5;
+	addr = (addr << 8) | (uint64_t) rom4;
+	addr = (addr << 8) | (uint64_t) rom3;
+	addr = (addr << 8) | (uint64_t) rom2;
+	addr = (addr << 8) | (uint64_t) rom1;
+	addr = (addr << 8) | (uint64_t) rom0;
+	return addr;
 }
 
-uint8_t onewire_crc8(const uint8_t *data, uint8_t len)
+inline uint8_t onewire_crc8(const uint8_t *data, uint8_t len)
 {
 	uint8_t crc = 0x00;
 
