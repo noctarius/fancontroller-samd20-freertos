@@ -13,7 +13,7 @@ static xTaskHandle task_uart_pid = NULL;
 static struct io_descriptor *io_usart0 = NULL;
 
 // Internal message queue
-static QueueHandle_t msg_queue = NULL;
+static QueueHandle_t uart_msg_queue = NULL;
 
 // Currently handled message
 static struct uart_msg *msg = NULL;
@@ -76,7 +76,7 @@ static void uart_task(void *pvParameters)
 	{
 		if (msg == NULL)
 		{
-			if ((ret = xQueueReceive(msg_queue, &msg, 0)) == pdPASS)
+			if ((ret = xQueueReceive(uart_msg_queue, &msg, 0)) == pdPASS)
 			{
 				uart_write_0(msg->msg, msg->msg_len);
 				
@@ -99,13 +99,14 @@ int16_t uart_write(char *msg, const uint8_t msg_len, const uint16_t timeout_mill
 {
 	xTaskHandle initiator = xTaskGetCurrentTaskHandle();
 	
-	struct uart_msg *new_msg = &(struct uart_msg) {
+	struct uart_msg *new_msg = &(struct uart_msg)
+	{
 		.msg = msg,
 		.msg_len = msg_len,
 		.initiator = initiator
 	};
 	
-	if (xQueueSend(msg_queue, &new_msg, ticks100ms) != pdPASS)
+	if (xQueueSend(uart_msg_queue, &new_msg, ticks100ms) != pdPASS)
 	{
 		return ERR_UART_QUEUE_FULL;
 	}
@@ -127,7 +128,7 @@ BaseType_t create_uart_task()
 
 void init_uart_task()
 {
-	msg_queue = xQueueCreate(4, sizeof(struct uart_msg *));
+	uart_msg_queue = xQueueCreate(4, sizeof(struct uart_msg *));
 	usart_async_register_callback(&USART_0, USART_ASYNC_TXC_CB, tx_cb_USART_0);
 	usart_async_register_callback(&USART_0, USART_ASYNC_RXC_CB, rx_cb_USART_0);
 	usart_async_register_callback(&USART_0, USART_ASYNC_ERROR_CB, err_cb_USART_0);

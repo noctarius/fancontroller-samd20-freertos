@@ -501,6 +501,9 @@
     <Compile Include="ds18b20.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="eeprom.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="examples\driver_examples.c">
       <SubType>compile</SubType>
     </Compile>
@@ -816,6 +819,9 @@
     <Compile Include="onewire.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="printf_freertos.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="printf_freertos.h">
       <SubType>compile</SubType>
     </Compile>
@@ -825,10 +831,7 @@
     <Compile Include="rtos_start.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="task_at24c256.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="task_at24c256.h">
+    <Compile Include="subsystems.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="task_i2c.c">

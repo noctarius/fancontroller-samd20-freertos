@@ -9,12 +9,18 @@
 #include "atmel_start.h"
 #include "FreeRTOS.h"
 #include "ticks.h"
+#include "main.h"
+#include "subsystems.h"
+#include "task_temperature.h"
+#include "task_i2c.h"
+#include "task_uart.h"
+#include "printf_freertos.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define TASK_SELFTEST_STACK_SIZE configMINIMAL_STACK_SIZE
+#define TASK_SELFTEST_STACK_SIZE 128
 
 BaseType_t create_selftest_task();
 

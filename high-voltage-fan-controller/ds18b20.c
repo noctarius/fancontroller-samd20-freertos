@@ -39,14 +39,24 @@ bool ds18b20_get_reading(struct ds18b20_desc *dev)
 		raw = raw & ~3;
 	else if (cfg == 0x40)
 		raw = raw & ~1;
-		
+	
+	uint8_t crc = onewire_crc8(scratchpad, 8);
+	
+	if (crc != scratchpad[8])
+	{
+		dev->reading = 0;
+		dev->reading = false;
+		return false;
+	}
+	
 	dev->valid = true;
 	double reading = raw * 0.0625;
+	dev->reading = (uint16_t) (reading * 100);
 	if (reading < -25. || reading > 125.)
 	{
 		dev->reading = 0;
 		dev->valid = false;
+		return false;
 	}
-	dev->reading = (uint16_t) (reading * 100);
 	return true;
 }

@@ -5,32 +5,20 @@
 #ifndef __MAIN_H__
 #define __MAIN_H__
 
-//#define configASSERT 1
-#define configENABLE_ERRATA_837070_WORKAROUND 1
-
 #include <atmel_start.h>
 #include <FreeRTOS.h>
 #include <task.h>
-#include "task_temperature.h"
+#include "subsystems.h"
 #include "task_uart.h"
-#include "task_i2c.h"
 #include "task_watchdog.h"
 #include "task_selftest.h"
-
-// Enabled subsystems
-#define TASK_ENABLE_UART		1
-#define TASK_ENABLE_DS18B20		1
-#define TASK_ENABLE_I2C			1
-#define TASK_ENABLE_AT24C256	0
-#define TASK_ENABLE_WATCHDOG	0
-#define TASK_ENABLE_MONITOR		0
-#define TASK_ENABLE_SWITCH		0
-#define TASK_ENABLE_MQTT		0
-#define TASK_ENABLE_SELFTEST	1
+#include "at24c256.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+void exceptionHandler(uint32_t blinkMillis);
 
 #ifdef __cplusplus
 }

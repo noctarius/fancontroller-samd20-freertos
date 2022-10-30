@@ -1,25 +1,5 @@
 #include "main.h"
 
-void exceptionHandler(uint32_t blinkMillis)
-{
-	kill_wdog_task();
-
-	// Clear LED status
-	gpio_set_pin_level(LED_1_R, true);
-	gpio_set_pin_level(LED_1_G, true);
-	gpio_set_pin_level(LED_1_B, true);
-	gpio_set_pin_level(LED_2_R, true);
-	gpio_set_pin_level(LED_2_G, true);
-	gpio_set_pin_level(LED_2_B, true);
-
-	while(1)
-	{
-		delay_ms(blinkMillis);
-		gpio_toggle_pin_level(LED_1_R);
-		gpio_toggle_pin_level(LED_2_R);
-	}
-}
-
 int main(void)
 {
 	BaseType_t ret;
@@ -66,36 +46,6 @@ int main(void)
 	}
 #endif
 
-#if TASK_ENABLE_DS18B20
-	// Initialize ds18b20
-	if (!init_temperature_task())
-	{
-		exceptionHandler(1000);
-	}
-	if ((ret = create_temperature_task()) != pdPASS)
-	{
-		exceptionHandler(500);
-	}
-#endif
-
-#if TASK_ENABLE_I2C
-	// Initialize i2c
-	init_i2c_task();
-	if ((ret = create_i2c_task()) != pdPASS)
-	{
-		exceptionHandler(500);
-	}
-#endif
-
-#if TASK_ENABLE_AT24C256
-	// Initialize at24c256
-	init_at24_task();
-	if ((ret = create_at24_task()) != pdPASS)
-	{
-		exceptionHandler(500);
-	}
-#endif
-
 	// Start the FreeRTOS task scheduler
 	vTaskStartScheduler();
 
@@ -108,13 +58,30 @@ void vApplicationStackOverflowHook(TaskHandle_t *pxTask, signed char *pcTaskName
 {
 	exceptionHandler(50);
 }
+
 // FreeRTOS malloc failed handler
 void vApplicationMallocFailedHook(TaskHandle_t *pxTask, signed char *pcTaskName)
 {
 	exceptionHandler(200);
 }
 
-void vAssertCalled(char *file, uint32_t line)
+// Signal exception
+void exceptionHandler(uint32_t blinkMillis)
 {
-	
+	kill_wdog_task();
+
+	// Clear LED status
+	gpio_set_pin_level(LED_1_R, true);
+	gpio_set_pin_level(LED_1_G, true);
+	gpio_set_pin_level(LED_1_B, true);
+	gpio_set_pin_level(LED_2_R, true);
+	gpio_set_pin_level(LED_2_G, true);
+	gpio_set_pin_level(LED_2_B, true);
+
+	while(1)
+	{
+		delay_ms(blinkMillis);
+		gpio_toggle_pin_level(LED_1_R);
+		gpio_toggle_pin_level(LED_2_R);
+	}
 }

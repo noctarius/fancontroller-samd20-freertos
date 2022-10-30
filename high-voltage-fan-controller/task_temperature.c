@@ -6,12 +6,9 @@
 #include "task_uart.h"
 #include "messages.h"
 #include "printf_freertos.h"
-#include <stdio.h>
 
 // Internal task pid and static task resources
 static xTaskHandle task_temperature_pid = NULL;
-static StaticTask_t xTaskBuffer;
-static StackType_t xStack[TASK_TEMPERATURE_STACK_SIZE];
 
 // Internal reference for the onewire device
 static struct onewire_desc OW_1 = {
