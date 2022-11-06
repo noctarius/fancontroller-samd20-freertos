@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "freertos.h": "c",
+        "wizchip_conf.h": "c",
+        "atmel_start.h": "c"
+    }
+}
