@@ -32,6 +32,7 @@
       <Value>../thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0</Value>
       <Value>../thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config</Value>
       <Value>%24(PackRepoDir)\atmel\SAMD20_DFP\1.3.165\samd20\include</Value>
+      <Value>../lwip/include</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.level>Optimize for size (-Os)</armgcc.compiler.optimization.level>

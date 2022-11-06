@@ -79,7 +79,7 @@ drivers:
       eic_arch_enable_irq_setting13: false
       eic_arch_enable_irq_setting14: false
       eic_arch_enable_irq_setting15: false
-      eic_arch_enable_irq_setting2: false
+      eic_arch_enable_irq_setting2: true
       eic_arch_enable_irq_setting3: false
       eic_arch_enable_irq_setting4: false
       eic_arch_enable_irq_setting5: false
@@ -129,7 +129,7 @@ drivers:
       eic_arch_sense13: No detection
       eic_arch_sense14: No detection
       eic_arch_sense15: No detection
-      eic_arch_sense2: No detection
+      eic_arch_sense2: Falling-edge detection
       eic_arch_sense3: No detection
       eic_arch_sense4: No detection
       eic_arch_sense5: No detection
@@ -153,7 +153,14 @@ drivers:
       eic_arch_wakeupen7: false
       eic_arch_wakeupen8: false
       eic_arch_wakeupen9: false
-    optional_signals: []
+    optional_signals:
+    - identifier: EXTERNAL_IRQ_0:EXTINT/2
+      pad: PA02
+      mode: Enabled
+      configuration: null
+      definition: Atmel:SAMD20_Drivers:0.0.1::SAMD20E18A-AN::optional_signal_definition::EIC.EXTINT.2
+      name: EIC/EXTINT/2
+      label: EXTINT/2
     variant: null
     clocks:
       domain_group:

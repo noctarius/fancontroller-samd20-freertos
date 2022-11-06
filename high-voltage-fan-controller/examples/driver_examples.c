@@ -10,11 +10,17 @@
 #include "driver_init.h"
 #include "utils.h"
 
+static void button_on_PA02_pressed(void)
+{
+}
+
 /**
  * Example of using EXTERNAL_IRQ_0
  */
 void EXTERNAL_IRQ_0_example(void)
 {
+
+	ext_irq_register(PIN_PA02, button_on_PA02_pressed);
 }
 
 /**
