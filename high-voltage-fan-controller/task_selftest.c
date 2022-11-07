@@ -75,6 +75,15 @@ static void selftest_task(void *pvParameters)
 		}
 	#endif
 
+	#if TASK_ENABLE_MQTT
+		// Initialize ETH / MQTT
+		init_eth_task();
+		if ((ret = create_eth_task()) != pdPASS)
+		{
+			exceptionHandler(500);
+		}
+	#endif
+
 	// Give the subsystems time to start up
 	vTaskDelay(ticks1s);
 	

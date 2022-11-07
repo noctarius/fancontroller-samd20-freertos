@@ -19,6 +19,10 @@ int main(void)
 	gpio_set_pin_level(LED_2_G, true);
 	gpio_set_pin_level(LED_2_B, true);
 
+#if TASK_ENABLE_MQTT
+	lowlevel_init_eth_task();
+#endif
+
 #if TASK_ENABLE_UART
 	// Initialize uart
 	init_uart_task();

@@ -18,6 +18,8 @@ static struct onewire_desc OW_1 = {
 // Reference to sensor devices
 static struct ds18b20_desc sensors[5];
 
+static char printf_buf[64];
+
 static inline void scan_for_sensor()
 {
 	uart_write(MSG_SENSOR_SEARCH, MSG_SENSOR_SEARCH_LEN, 1000);
@@ -41,9 +43,8 @@ static inline void scan_for_sensor()
 			break;
 		}
 
-		char buffer[18];
 		int len = freertos_sprintf(
-			&buffer[0],
+			printf_buf,
 			"found: 0x%02X%02X%02X%02X%02X%02X%02X%02X\r\n",
 			(uint8_t) (addr >> 56),
 			(uint8_t) (addr >> 48),
@@ -54,7 +55,7 @@ static inline void scan_for_sensor()
 			(uint8_t) (addr >>  8),
 			(uint8_t) (addr >>  0)
 		);
-		uart_write(buffer, len, 1000);
+		uart_write(printf_buf, len, 1000);
 		
 		sensors[sensor_id].addr = addr;
 		sensors[sensor_id].ow = &OW_1;
@@ -78,31 +79,27 @@ static void temperature_task(void *pvParameters)
 			struct ds18b20_desc sensor = sensors[i];
 			if (!sensor.avail) break;
 			
-			char buffer[18];
-			int len = freertos_sprintf(
-				&buffer[0],
-				"sensor: 0x%02X%02X%02X%02X%02X%02X%02X%02X ",
-				(uint8_t) (sensor.addr >> 56),
-				(uint8_t) (sensor.addr >> 48),
-				(uint8_t) (sensor.addr >> 40),
-				(uint8_t) (sensor.addr >> 32),
-				(uint8_t) (sensor.addr >> 24),
-				(uint8_t) (sensor.addr >> 16),
-				(uint8_t) (sensor.addr >>  8),
-				(uint8_t) (sensor.addr >>  0)
-			);
-			uart_write(buffer, len, 1000);
-			
 			if (ds18b20_initiate_reading(&sensor))
 			{
 				vTaskDelay(ticks750ms);
 				ds18b20_get_reading(&sensor);
 				if (sensor.valid)
 				{
-					len = freertos_sprintf(&buffer[0], "=> %d", sensor.reading);
-					uart_write(buffer, len, 1000);
+					int len = freertos_sprintf(
+					printf_buf,
+					"sensor: 0x%02X%02X%02X%02X%02X%02X%02X%02X => %d\r\n",
+					(uint8_t) (sensor.addr >> 56),
+					(uint8_t) (sensor.addr >> 48),
+					(uint8_t) (sensor.addr >> 40),
+					(uint8_t) (sensor.addr >> 32),
+					(uint8_t) (sensor.addr >> 24),
+					(uint8_t) (sensor.addr >> 16),
+					(uint8_t) (sensor.addr >>  8),
+					(uint8_t) (sensor.addr >>  0),
+					sensor.reading
+					);
+					uart_write(printf_buf, len, 1000);
 				}
-				uart_write("\r\n", 2, 1000);
 			}
 		
 			vTaskDelay(ticks250ms);

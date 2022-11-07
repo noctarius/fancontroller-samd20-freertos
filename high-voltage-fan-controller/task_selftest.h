@@ -14,6 +14,7 @@
 #include "task_temperature.h"
 #include "task_i2c.h"
 #include "task_uart.h"
+#include "task_eth.h"
 #include "printf_freertos.h"
 
 #ifdef __cplusplus

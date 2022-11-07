@@ -17,7 +17,7 @@ extern "C" {
 #define TASK_ENABLE_WATCHDOG	0
 #define TASK_ENABLE_MONITOR		0
 #define TASK_ENABLE_SWITCH		0
-#define TASK_ENABLE_MQTT		0
+#define TASK_ENABLE_MQTT		1
 #define TASK_ENABLE_SELFTEST	1
 
 #ifdef __cplusplus
