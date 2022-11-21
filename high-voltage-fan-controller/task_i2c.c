@@ -15,158 +15,211 @@ static struct io_descriptor *io_i2c0 = NULL;
 static QueueHandle_t msg_queue = NULL;
 
 // Internal transaction variables
-static volatile uint8_t *transact_buf = NULL;
-static volatile uint16_t transact_buf_remaining = 0;
-static volatile uint16_t transact_buf_offset = 0;
+/*static volatile struct ongoing_operation
+{
+	uint8_t *buf;
+	uint16_t remaining;
+	uint16_t offet;
+	uint16_t addr;
+	bool in_progress;
+	bool write_before_read;
+} ongoing_operation; */
 static volatile bool transact_in_progress = false;
+static volatile bool page_in_progress = false;
+static volatile bool write_before_read_in_progress = false;
+
+static uint16_t transact_buf_remaining = 0;
+static uint16_t transact_buf_offset = 0;
+
 static uint8_t page[MAX_FRAME_SIZE + 2]; // +2 => reg addr
+
+static inline uint16_t write_page(const struct i2c_m_async_desc *const i2c, const uint16_t addr, uint16_t reg_addr, uint8_t *buf, uint16_t count)
+{
+	page_in_progress = true;
+	
+	uint8_t remaining = min(MAX_FRAME_SIZE, count);
+	int32_t written = 0;
+	if (remaining > 0)
+	{
+		page[0] = (uint8_t) ((transact_buf_offset & 0xFF00) >> 8);
+		page[1] = (uint8_t) (transact_buf_offset & 0x00FF);
+		written += 2;
+		
+		memcpy((uint8_t *) &page[2], buf, remaining);
+		written += remaining;
+	}
+
+	return io_write(io_i2c0, page, written) - (remaining > 0 ? 2 : 0);
+}
+
+static inline uint16_t read_page(const struct i2c_m_async_desc *const i2c, const uint16_t addr, uint16_t reg_addr, uint8_t *buf, uint16_t count)
+{
+	if (page_in_progress) return -1;
+
+	if (count > 0)
+	{
+		transact_in_progress = true;
+
+		write_before_read_in_progress = true;		
+		page[0] = (uint8_t) ((reg_addr & 0xFF00) >> 8);
+		page[1] = (uint8_t) (reg_addr & 0x00FF);
+		
+		i2c_m_async_set_slaveaddr(&I2C_0, addr, I2C_M_SEVEN);
+		io_write(io_i2c0, page, 2);
+		while (write_before_read_in_progress)
+		{
+			vTaskDelay(ticks20ms);
+		}
+
+		page_in_progress = true;
+		return io_read(io_i2c0, buf, min(MAX_FRAME_SIZE, count));
+	}
+	
+	return 0;
+}
 
 static void tx_cb_I2C_0(const struct i2c_m_async_desc *const i2c)
 {
-	uint8_t remaining = min(MAX_FRAME_SIZE, transact_buf_remaining);
-	int32_t write = io_write(io_i2c0, (uint8_t *) (transact_buf + transact_buf_offset), remaining);
-	if (write > 0)
-	{
-		transact_buf_offset += (uint16_t) write;
-		transact_buf_remaining -= (uint16_t) write;
-	}
+	if (write_before_read_in_progress)
+		write_before_read_in_progress = false;
+	else if (page_in_progress)
+		page_in_progress = false;
 	else
 		transact_in_progress = false;
 }
 
 static void rx_cb_I2C_0(const struct i2c_m_async_desc *const i2c)
 {
-	uint8_t remaining = min(MAX_FRAME_SIZE, transact_buf_remaining);
-	int32_t read = io_read(io_i2c0, (uint8_t *) transact_buf + transact_buf_offset, remaining);
-	if (read > 0)
-	{
-		transact_buf_offset += (uint16_t) read;
-		transact_buf_remaining -= (uint16_t) read;
-	}
-	else
-		transact_in_progress = false;
+	page_in_progress = false;
 }
 
 static void err_cb_I2C_0(const struct i2c_m_async_desc *const i2c)
 {
 	/* Transfer completed */
 	transact_in_progress = false;
+	page_in_progress = false;
+	write_before_read_in_progress = false;
 }
 
 static inline int _i2c_write(const uint8_t addr, const uint8_t *data, const uint16_t count)
 {
-	if (transact_in_progress) return - 1;
+	if (transact_in_progress)
+		return - 1;
 	
-	if (count > 0)
-	{
-		transact_in_progress = true;
+	if (count <= 0)
+		return 0;
+	
+	if (count > MAX_FRAME_SIZE)
+		return -3;
+	
+	transact_in_progress = true;
 		
-		uint8_t remaining = min(MAX_FRAME_SIZE, count);
-		transact_buf = (uint8_t *) data;
-		transact_buf_remaining = count - remaining;
-		transact_buf_offset = remaining;
+	i2c_m_async_set_slaveaddr(&I2C_0, addr, I2C_M_SEVEN);
+	int32_t written = io_write(io_i2c0, data, count);
+	if (written > 0)
+	{
+		transact_buf_remaining -= (uint16_t) (written - 2);
+		transact_buf_offset += (uint16_t) (written - 2);
+	}
 
-		i2c_m_async_set_slaveaddr(&I2C_0, addr, I2C_M_SEVEN);
-		io_write(io_i2c0, data, count);
-
-		while (transact_in_progress)
-		{
-			vTaskDelay(ticks20ms);
-		}
+	while (transact_in_progress)
+	{
+		vTaskDelay(ticks20ms);
 	}
 	return count;
 }
 
 static inline int _i2c_write_reg(const uint8_t addr, const uint16_t reg_addr, const uint8_t *data, const uint16_t count)
 {
-	if (transact_in_progress) return - 1;
+	if (transact_in_progress)
+		return - 1;
 	
-	if (count > 0)
+	if (count <= 0)
+		return 0;
+	
+	transact_buf_offset = 0;
+	transact_buf_remaining = count;
+	while (transact_buf_remaining > 0)
 	{
-		transact_in_progress = true;
-
-		page[0] = (uint8_t) ((reg_addr && 0xFF00) >> 8);
-		page[1] = (uint8_t) (reg_addr && 0x00FF);
-
-		uint8_t remaining = min(MAX_FRAME_SIZE, count);
-		memcpy((uint8_t *) &page[2], (uint8_t *) data, remaining);
-
-		transact_buf = (uint8_t *) data;
-		transact_buf_remaining = count - remaining;
-		transact_buf_offset = remaining;
-
-		i2c_m_async_set_slaveaddr(&I2C_0, addr, I2C_M_SEVEN);
-		io_write(io_i2c0, &page[0], remaining + 2);
-		while (transact_in_progress)
+		int32_t written = write_page(&I2C_0, addr, reg_addr + transact_buf_offset, (uint8_t *) (data + transact_buf_offset), transact_buf_remaining);
+		if (written < 0)
+		{
+			transact_in_progress = false;
+			return -2;
+		}
+		
+		while (page_in_progress)
 		{
 			vTaskDelay(ticks20ms);
 		}
+		
+		transact_buf_remaining -= (uint16_t) written;
+		transact_buf_offset += (uint16_t) written;
 	}
-	return count;
+	transact_in_progress = false;
+	return transact_buf_offset;
 }
 
 static inline int _i2c_read(const uint8_t addr, const uint8_t *data, const uint16_t count)
 {
-	if (transact_in_progress) return - 1;
+	if (transact_in_progress)
+		return - 1;
+		
+	if (count <= 0)
+		return 0;
+		
+	if (count > MAX_FRAME_SIZE)
+		return -3;
 	
-	if (count > 0)
+	transact_in_progress = true;
+
+	uint8_t remaining = min(MAX_FRAME_SIZE, count);
+
+	i2c_m_async_set_slaveaddr(&I2C_0, addr, I2C_M_SEVEN);
+	int32_t read = io_read(io_i2c0, (uint8_t *) data, remaining);
+	if (read < 0)
 	{
-		transact_in_progress = true;
-
-		uint8_t remaining = min(MAX_FRAME_SIZE, count);
-		transact_buf = (uint8_t *) data;
-		transact_buf_remaining = count - remaining;
-		transact_buf_offset = remaining;
-
-		i2c_m_async_set_slaveaddr(&I2C_0, addr, I2C_M_SEVEN);
-		io_read(io_i2c0, (uint8_t *) data, remaining);
-
-		while (transact_in_progress)
-		{
-			vTaskDelay(ticks20ms);
-		}
-		return count;
+		transact_in_progress = false;
+		return -2;
 	}
-	return 0;
+
+	while (transact_in_progress)
+	{
+		vTaskDelay(ticks20ms);
+	}
+	transact_in_progress = false;
+	return read;
 }
 
 static inline int _i2c_read_reg(const uint8_t addr, const uint16_t reg_addr, const uint8_t *data, const uint16_t count)
 {
-	if (transact_in_progress) return - 1;
+	if (transact_in_progress)
+		return - 1;
 	
-	if (count > 0)
+	if (count <= 0)
+		return 0;
+	
+	transact_buf_offset = 0;
+	transact_buf_remaining = count;
+	while (transact_buf_remaining > 0)
 	{
-		transact_in_progress = true;
-
-		page[0] = (uint8_t) ((reg_addr && 0xFF00) >> 8);
-		page[1] = (uint8_t) (reg_addr && 0x00FF);
-
-		transact_buf = &page[0];
-		transact_buf_offset = 2;
-		transact_buf_remaining = 0;
-
-		i2c_m_async_set_slaveaddr(&I2C_0, addr, I2C_M_SEVEN);
-		io_write(io_i2c0, page, 2);
-		while (transact_in_progress)
+		int32_t read = read_page(&I2C_0, addr, reg_addr + transact_buf_offset, (uint8_t *) (data + transact_buf_offset), transact_buf_remaining);
+		if (read < 0)
+		{
+			transact_in_progress = false;
+			return -2;
+		}
+		
+		while (page_in_progress)
 		{
 			vTaskDelay(ticks20ms);
 		}
-
-		transact_in_progress = true;
-
-		uint8_t remaining = min(MAX_FRAME_SIZE, count);
-		transact_buf = (uint8_t *) data;
-		transact_buf_offset = remaining;
-		transact_buf_remaining = count - remaining;
-
-		io_read(io_i2c0, (uint8_t *) data, remaining);
-		while (transact_in_progress)
-		{
-			vTaskDelay(ticks20ms);
-		}
-		return count;
+		
+		transact_buf_remaining -= (uint16_t) read;
+		transact_buf_offset += (uint16_t) read;
 	}
-	return 0;
+	transact_in_progress = false;
+	return transact_buf_offset;
 }
 
 static void i2c_task(void *pvParameters)

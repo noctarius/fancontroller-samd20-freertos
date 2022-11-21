@@ -12,6 +12,12 @@
   <armgcc.compiler.directories.IncludePaths>
     <ListValues>
       <Value>%24(PackRepoDir)\ARM\CMSIS\5.4.0\CMSIS\Core\Include\</Value>
+      <Value>../thirdparty/wiznet</Value>
+      <Value>../thirdparty/wiznet/w5500</Value>
+      <Value>../thirdparty/wiznet/dhcp</Value>
+      <Value>../thirdparty/wiznet/mqtt</Value>
+      <Value>../thirdparty/wiznet/mqtt/MQTTPacket</Value>
+      <Value>../thirdparty/cbor</Value>
       <Value>../Config</Value>
       <Value>../</Value>
       <Value>../examples</Value>
@@ -49,6 +55,7 @@
     </ListValues>
   </armgcc.linker.libraries.LibrarySearchPaths>
   <armgcc.linker.optimization.GarbageCollectUnusedSections>True</armgcc.linker.optimization.GarbageCollectUnusedSections>
+  <armgcc.linker.memorysettings.ExternalRAM />
   <armgcc.linker.miscellaneous.LinkerFlags>-Tsamd20e18_flash.ld</armgcc.linker.miscellaneous.LinkerFlags>
   <armgcc.assembler.general.IncludePaths>
     <ListValues>

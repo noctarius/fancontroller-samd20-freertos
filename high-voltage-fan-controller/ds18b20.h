@@ -22,7 +22,7 @@ struct ds18b20_desc {
 
 bool ds18b20_initiate_reading(struct ds18b20_desc *dev);
 
-bool ds18b20_get_reading(struct ds18b20_desc *dev);
+bool ds18b20_get_reading(struct ds18b20_desc *dev, int16_t offset);
 
 #ifdef __cplusplus
 }

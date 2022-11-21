@@ -3,6 +3,7 @@
  */ 
 
 #include "ds18b20.h"
+#include "eeprom.h"
 
 bool ds18b20_initiate_reading(struct ds18b20_desc *dev)
 {
@@ -17,7 +18,7 @@ bool ds18b20_initiate_reading(struct ds18b20_desc *dev)
 	return true;
 }
 
-bool ds18b20_get_reading(struct ds18b20_desc *dev)
+bool ds18b20_get_reading(struct ds18b20_desc *dev, int16_t offset)
 {
 	if (dev == NULL) return false;
 	
@@ -51,7 +52,8 @@ bool ds18b20_get_reading(struct ds18b20_desc *dev)
 	
 	dev->valid = true;
 	double reading = raw * 0.0625;
-	dev->reading = (uint16_t) (reading * 100);
+	dev->reading = ((uint16_t) (reading * 100)) + offset;
+	
 	if (reading < -25. || reading > 125.)
 	{
 		dev->reading = 0;

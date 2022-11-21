@@ -22,6 +22,7 @@
         "freertos.h": "c",
         "hal_atomic.h": "c",
         "hal_delay.h": "c",
-        "hal_io.h": "c"
+        "hal_io.h": "c",
+        "w5500_port.h": "c"
     }
 }

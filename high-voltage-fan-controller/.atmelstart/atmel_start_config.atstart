@@ -79,7 +79,7 @@ drivers:
       eic_arch_enable_irq_setting13: false
       eic_arch_enable_irq_setting14: false
       eic_arch_enable_irq_setting15: false
-      eic_arch_enable_irq_setting2: false
+      eic_arch_enable_irq_setting2: true
       eic_arch_enable_irq_setting3: false
       eic_arch_enable_irq_setting4: false
       eic_arch_enable_irq_setting5: false
@@ -129,7 +129,7 @@ drivers:
       eic_arch_sense13: No detection
       eic_arch_sense14: No detection
       eic_arch_sense15: No detection
-      eic_arch_sense2: No detection
+      eic_arch_sense2: Falling-edge detection
       eic_arch_sense3: No detection
       eic_arch_sense4: No detection
       eic_arch_sense5: No detection
@@ -153,7 +153,14 @@ drivers:
       eic_arch_wakeupen7: false
       eic_arch_wakeupen8: false
       eic_arch_wakeupen9: false
-    optional_signals: []
+    optional_signals:
+    - identifier: EXTERNAL_IRQ_0:EXTINT/2
+      pad: PA02
+      mode: Enabled
+      configuration: null
+      definition: Atmel:SAMD20_Drivers:0.0.1::SAMD20E18A-AN::optional_signal_definition::EIC.EXTINT.2
+      name: EIC/EXTINT/2
+      label: EXTINT/2
     variant: null
     clocks:
       domain_group:
@@ -170,16 +177,16 @@ drivers:
     functionality: System
     api: HAL:HPL:GCLK
     configuration:
-      $input: 400000
-      $input_id: External Crystal Oscillator 0.4-32MHz (XOSC)
-      RESERVED_InputFreq: 400000
-      RESERVED_InputFreq_id: External Crystal Oscillator 0.4-32MHz (XOSC)
+      $input: 32768
+      $input_id: 32kHz Ultra Low Power Internal Oscillator (OSCULP32K)
+      RESERVED_InputFreq: 32768
+      RESERVED_InputFreq_id: 32kHz Ultra Low Power Internal Oscillator (OSCULP32K)
       _$freq_output_Generic clock generator 0: 24000000
       _$freq_output_Generic clock generator 1: 48000000
       _$freq_output_Generic clock generator 2: 32768
       _$freq_output_Generic clock generator 3: 8000000
       _$freq_output_Generic clock generator 4: 1000000
-      _$freq_output_Generic clock generator 5: 400000
+      _$freq_output_Generic clock generator 5: 1024
       _$freq_output_Generic clock generator 6: 400000
       _$freq_output_Generic clock generator 7: 400000
       enable_gclk_gen_0: true
@@ -192,7 +199,7 @@ drivers:
       enable_gclk_gen_3__externalclock: 1000000
       enable_gclk_gen_4: true
       enable_gclk_gen_4__externalclock: 1000000
-      enable_gclk_gen_5: false
+      enable_gclk_gen_5: true
       enable_gclk_gen_5__externalclock: 1000000
       enable_gclk_gen_6: false
       enable_gclk_gen_6__externalclock: 1000000
@@ -224,7 +231,7 @@ drivers:
       gclk_arch_gen_4_oe: false
       gclk_arch_gen_4_oov: false
       gclk_arch_gen_5_RUNSTDBY: false
-      gclk_arch_gen_5_enable: false
+      gclk_arch_gen_5_enable: true
       gclk_arch_gen_5_idc: false
       gclk_arch_gen_5_oe: false
       gclk_arch_gen_5_oov: false
@@ -253,9 +260,9 @@ drivers:
       gclk_gen_4_div: 8
       gclk_gen_4_div_sel: false
       gclk_gen_4_oscillator: 8MHz Internal Oscillator (OSC8M)
-      gclk_gen_5_div: 1
+      gclk_gen_5_div: 32
       gclk_gen_5_div_sel: false
-      gclk_gen_5_oscillator: External Crystal Oscillator 0.4-32MHz (XOSC)
+      gclk_gen_5_oscillator: 32kHz Ultra Low Power Internal Oscillator (OSCULP32K)
       gclk_gen_6_div: 1
       gclk_gen_6_div_sel: false
       gclk_gen_6_oscillator: External Crystal Oscillator 0.4-32MHz (XOSC)
@@ -507,11 +514,11 @@ drivers:
       domain_group:
         nodes:
         - name: WDT
-          input: Generic clock generator 3
+          input: Generic clock generator 5
           external: false
           external_frequency: 0
         configuration:
-          wdt_gclk_selection: Generic clock generator 3
+          wdt_gclk_selection: Generic clock generator 5
 pads:
   UART_TX:
     name: PA00
@@ -530,7 +537,8 @@ pads:
     definition: Atmel:SAMD20_Drivers:0.0.1::SAMD20E18A-AN::pad::PA02
     mode: Digital input
     user_label: ETH_INT
-    configuration: null
+    configuration:
+      pad_pull_config: Pull-up
   ETH_RST:
     name: PA03
     definition: Atmel:SAMD20_Drivers:0.0.1::SAMD20E18A-AN::pad::PA03

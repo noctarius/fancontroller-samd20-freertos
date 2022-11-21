@@ -9,6 +9,7 @@
 extern "C" {
 #endif
 
+#define ticks60s	pdMS_TO_TICKS(60000)
 #define ticks10s	pdMS_TO_TICKS(10000)
 #define ticks1s		pdMS_TO_TICKS(1000)
 #define ticks750ms	pdMS_TO_TICKS(750)

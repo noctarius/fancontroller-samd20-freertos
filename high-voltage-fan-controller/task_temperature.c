@@ -4,8 +4,8 @@
 
 #include "task_temperature.h"
 #include "task_uart.h"
-#include "messages.h"
 #include "printf_freertos.h"
+#include "eeprom.h"
 
 // Internal task pid and static task resources
 static xTaskHandle task_temperature_pid = NULL;
@@ -18,9 +18,11 @@ static struct onewire_desc OW_1 = {
 // Reference to sensor devices
 static struct ds18b20_desc sensors[5];
 
+static char printf_buf[64];
+
 static inline void scan_for_sensor()
 {
-	uart_write(MSG_SENSOR_SEARCH, MSG_SENSOR_SEARCH_LEN, 1000);
+	uart_write("Sensor: Searching for sensors...\r\n", 34, 1000);
 
 	onewire_search_t search;
 	onewire_search_start(&OW_1, &search);
@@ -41,10 +43,9 @@ static inline void scan_for_sensor()
 			break;
 		}
 
-		char buffer[18];
 		int len = freertos_sprintf(
-			&buffer[0],
-			"found: 0x%02X%02X%02X%02X%02X%02X%02X%02X\r\n",
+			printf_buf,
+			"Sensor: Found 0x%02X%02X%02X%02X%02X%02X%02X%02X\r\n",
 			(uint8_t) (addr >> 56),
 			(uint8_t) (addr >> 48),
 			(uint8_t) (addr >> 40),
@@ -54,7 +55,7 @@ static inline void scan_for_sensor()
 			(uint8_t) (addr >>  8),
 			(uint8_t) (addr >>  0)
 		);
-		uart_write(buffer, len, 1000);
+		uart_write(printf_buf, len, 1000);
 		
 		sensors[sensor_id].addr = addr;
 		sensors[sensor_id].ow = &OW_1;
@@ -72,37 +73,37 @@ static void temperature_task(void *pvParameters)
 
 	while (1) 
 	{
-		uart_write("Reading sensors...\r\n", 20, 1000);
+		uart_write("Sensor: Updating temperatures...\r\n", 34, 1000);
 		for (uint8_t i = 0; i < 5; i++)
 		{
-			struct ds18b20_desc sensor = sensors[i];
-			if (!sensor.avail) break;
+			struct ds18b20_desc *sensor = get_temperature_sensor_by_index(i);
+			if (!sensor->avail) break;
 			
-			char buffer[18];
-			int len = freertos_sprintf(
-				&buffer[0],
-				"sensor: 0x%02X%02X%02X%02X%02X%02X%02X%02X ",
-				(uint8_t) (sensor.addr >> 56),
-				(uint8_t) (sensor.addr >> 48),
-				(uint8_t) (sensor.addr >> 40),
-				(uint8_t) (sensor.addr >> 32),
-				(uint8_t) (sensor.addr >> 24),
-				(uint8_t) (sensor.addr >> 16),
-				(uint8_t) (sensor.addr >>  8),
-				(uint8_t) (sensor.addr >>  0)
-			);
-			uart_write(buffer, len, 1000);
-			
-			if (ds18b20_initiate_reading(&sensor))
+			if (ds18b20_initiate_reading(sensor))
 			{
 				vTaskDelay(ticks750ms);
-				ds18b20_get_reading(&sensor);
-				if (sensor.valid)
+				
+				int8_t sensor_id = eeprom_sensor_find_by_addr(sensor->addr);
+				int16_t offset = eeprom_sensor_get_offset(sensor_id);
+				
+				ds18b20_get_reading(sensor, offset);
+				if (sensor->valid)
 				{
-					len = freertos_sprintf(&buffer[0], "=> %d", sensor.reading);
-					uart_write(buffer, len, 1000);
+					int len = freertos_sprintf(
+					printf_buf,
+					"Sensor: 0x%02X%02X%02X%02X%02X%02X%02X%02X => %d\r\n",
+					(uint8_t) (sensor->addr >> 56),
+					(uint8_t) (sensor->addr >> 48),
+					(uint8_t) (sensor->addr >> 40),
+					(uint8_t) (sensor->addr >> 32),
+					(uint8_t) (sensor->addr >> 24),
+					(uint8_t) (sensor->addr >> 16),
+					(uint8_t) (sensor->addr >>  8),
+					(uint8_t) (sensor->addr >>  0),
+					sensor->reading
+					);
+					uart_write(printf_buf, len, 1000);
 				}
-				uart_write("\r\n", 2, 1000);
 			}
 		
 			vTaskDelay(ticks250ms);
@@ -113,11 +114,81 @@ static void temperature_task(void *pvParameters)
 	vTaskDelete(NULL);
 }
 
-struct ds18b20_desc *get_temperature_sensor(uint8_t idx)
+struct ds18b20_desc *get_temperature_sensor_by_index(uint8_t idx)
 {
 	if (idx > 4) return NULL;
 	if (!sensors[idx].avail) return NULL;
 	return &sensors[idx];
+}
+
+struct ds18b20_desc *get_temperature_sensor_by_addr(onewire_addr_t addr)
+{
+	for (uint8_t i = 0; i < 5; i++)
+	{
+		if (sensors[i].avail && sensors[i].addr == addr)
+			return &sensors[i];
+	}
+	return NULL;
+}
+
+uint16_t get_temperature_avg_outdoor()
+{
+	uint16_t sum = 0;
+	uint16_t count = 0;
+	uint8_t sensor_count = get_temperature_sensor_count();
+	for (uint8_t i = 0; i < sensor_count; i++)
+	{
+		struct ds18b20_desc *sensor = get_temperature_sensor_by_index(i);
+		if (!sensor->avail || !sensor->valid)
+			continue;
+			
+		int8_t sensor_id = eeprom_sensor_find_by_addr(sensor->addr);
+		if (!eeprom_sensor_get_indoor(sensor_id))
+		{
+			sum += sensor->reading;
+			count++;
+		}
+	}
+
+	if (count == 0)
+		return 0;
+
+	return (sum / count);
+}
+
+uint16_t get_temperature_avg_indoor()
+{
+	uint16_t sum = 0;
+	uint16_t count = 0;
+	uint8_t sensor_count = get_temperature_sensor_count();
+	for (uint8_t i = 0; i < sensor_count; i++)
+	{
+		struct ds18b20_desc *sensor = get_temperature_sensor_by_index(i);
+		if (!sensor->avail || !sensor->valid)
+			continue;
+		
+		int8_t sensor_id = eeprom_sensor_find_by_addr(sensor->addr);
+		if (eeprom_sensor_get_indoor(sensor_id))
+		{
+			sum += sensor->reading;
+			count++;
+		}
+	}
+	
+	if (count == 0)
+		return 0;
+	
+	return (sum / count);
+}
+
+uint8_t get_temperature_sensor_count()
+{
+	uint8_t count = 0;
+	for (uint8_t i = 0; i < 5; i++)
+	{
+		if (sensors[i].avail) count++;
+	}
+	return count;
 }
 
 BaseType_t create_temperature_task()
