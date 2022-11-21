@@ -24,9 +24,9 @@ typedef struct i2c_msg
 	xTaskHandle		initiator;
 } i2c_msg;
 
-#define TASK_I2C_STACK_SIZE configMINIMAL_STACK_SIZE
+#define TASK_I2C_STACK_SIZE 120
 
-#define MAX_FRAME_SIZE 16
+#define MAX_FRAME_SIZE 32
 
 #define ERR_I2C_RESP_BUF_TOO_SMALL	-1
 #define ERR_I2C_QUEUE_FULL			-2

@@ -158,7 +158,7 @@
           <AcmeProjectActionInfo Action="File" Source="thirdparty/RTOS/freertos/FreeRTOSV10.0.0/rtos_port.h" IsConfig="false" Hash="Baw4Jk98MXVMCgOpHonTKw" />
           <AcmeProjectActionInfo Action="File" Source="thirdparty/RTOS/hal_rtos.h" IsConfig="false" Hash="a/nFQFsMhBuLqDglDTUWOA" />
           <AcmeProjectActionInfo Action="File" Source="main.c" IsConfig="false" Hash="k0AH7j+BrmdFhBPzCCMptA" />
-          <AcmeProjectActionInfo Action="File" Source="driver_init.c" IsConfig="false" Hash="mR4u8vyMpEz2+NbFERQyTw" />
+          <AcmeProjectActionInfo Action="File" Source="driver_init.c" IsConfig="false" Hash="7uL+FIg+tCi58VOMA4YIZQ" />
           <AcmeProjectActionInfo Action="File" Source="driver_init.h" IsConfig="false" Hash="hz+4QEhKw/w0SAavbHkLcQ" />
           <AcmeProjectActionInfo Action="File" Source="atmel_start_pins.h" IsConfig="false" Hash="iubrJrst8jfQMr647Ixz2w" />
           <AcmeProjectActionInfo Action="File" Source="examples/driver_examples.h" IsConfig="false" Hash="+OYIIdYxnDOVftdlXXm0jg" />
@@ -195,12 +195,12 @@
           <AcmeProjectActionInfo Action="File" Source="atmel_start.h" IsConfig="false" Hash="DZWOqxIgfB1EFcVpW4RJmQ" />
           <AcmeProjectActionInfo Action="File" Source="atmel_start.c" IsConfig="false" Hash="1RHIE7zTtYK4DURNPUqF9w" />
           <AcmeProjectActionInfo Action="File" Source="config/hpl_eic_config.h" IsConfig="true" Hash="0VEPMxm/wZVVwHinpHS1yw" />
-          <AcmeProjectActionInfo Action="File" Source="config/hpl_gclk_config.h" IsConfig="true" Hash="RA1+HFzreTg+J5U5oymBYQ" />
+          <AcmeProjectActionInfo Action="File" Source="config/hpl_gclk_config.h" IsConfig="true" Hash="nXYY6+yABGPRSibl2YtngA" />
           <AcmeProjectActionInfo Action="File" Source="config/hpl_pm_config.h" IsConfig="true" Hash="GH0DautnKY3X7yLEFG4tgA" />
           <AcmeProjectActionInfo Action="File" Source="config/hpl_sercom_config.h" IsConfig="true" Hash="UsJ/mEUnxtqvqSXiV1DXQw" />
           <AcmeProjectActionInfo Action="File" Source="config/hpl_sysctrl_config.h" IsConfig="true" Hash="k12NBEt2aJu3NVVdQls3Bw" />
           <AcmeProjectActionInfo Action="File" Source="config/hpl_wdt_config.h" IsConfig="true" Hash="VXmGlmqnP+df3XbIaFBshg" />
-          <AcmeProjectActionInfo Action="File" Source="config/peripheral_clk_config.h" IsConfig="true" Hash="0q/oUmu5/9kzbDJjhBLP3w" />
+          <AcmeProjectActionInfo Action="File" Source="config/peripheral_clk_config.h" IsConfig="true" Hash="Y6FFvmlz60HiWKWW8lKuhA" />
           <AcmeProjectActionInfo Action="File" Source="config/FreeRTOSConfig.h" IsConfig="true" Hash="wkmTsq93/RpPO42Ph2vZ5A" />
         </AcmeActionInfos>
         <NonsecureFilesInfo />
@@ -239,6 +239,12 @@
   <armgcc.compiler.directories.IncludePaths>
     <ListValues>
       <Value>%24(PackRepoDir)\ARM\CMSIS\5.4.0\CMSIS\Core\Include\</Value>
+      <Value>../thirdparty/wiznet</Value>
+      <Value>../thirdparty/wiznet/w5500</Value>
+      <Value>../thirdparty/wiznet/dhcp</Value>
+      <Value>../thirdparty/wiznet/mqtt</Value>
+      <Value>../thirdparty/wiznet/mqtt/MQTTPacket</Value>
+      <Value>../thirdparty/cbor</Value>
       <Value>../Config</Value>
       <Value>../</Value>
       <Value>../examples</Value>
@@ -259,11 +265,6 @@
       <Value>../thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0</Value>
       <Value>../thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config</Value>
       <Value>%24(PackRepoDir)\atmel\SAMD20_DFP\1.3.165\samd20\include</Value>
-      <Value>../thirdparty/wiznet</Value>
-      <Value>../thirdparty/wiznet/w5500</Value>
-      <Value>../thirdparty/wiznet/dhcp</Value>
-      <Value>../thirdparty/wiznet/mqtt</Value>
-      <Value>../thirdparty/wiznet/mqtt/MQTTPacket</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.level>Optimize for size (-Os)</armgcc.compiler.optimization.level>
@@ -352,6 +353,12 @@
   <armgcc.compiler.directories.IncludePaths>
     <ListValues>
       <Value>%24(PackRepoDir)\ARM\CMSIS\5.4.0\CMSIS\Core\Include\</Value>
+      <Value>../thirdparty/wiznet</Value>
+      <Value>../thirdparty/wiznet/w5500</Value>
+      <Value>../thirdparty/wiznet/dhcp</Value>
+      <Value>../thirdparty/wiznet/mqtt</Value>
+      <Value>../thirdparty/wiznet/mqtt/MQTTPacket</Value>
+      <Value>../thirdparty/cbor</Value>
       <Value>../Config</Value>
       <Value>../</Value>
       <Value>../examples</Value>
@@ -372,11 +379,6 @@
       <Value>../thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0</Value>
       <Value>../thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config</Value>
       <Value>%24(PackRepoDir)\atmel\SAMD20_DFP\1.3.165\samd20\include</Value>
-      <Value>../thirdparty/wiznet</Value>
-      <Value>../thirdparty/wiznet/w5500</Value>
-      <Value>../thirdparty/wiznet/dhcp</Value>
-      <Value>../thirdparty/wiznet/mqtt</Value>
-      <Value>../thirdparty/wiznet/mqtt/MQTTPacket</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.level>Optimize debugging experience (-Og)</armgcc.compiler.optimization.level>
@@ -511,6 +513,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="ds18b20.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="eeprom.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="eeprom.h">
@@ -816,13 +821,16 @@
     <Compile Include="hri\hri_wdt_d20.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="leds.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="leds.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="messages.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="onewire.c">
@@ -835,6 +843,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="printf_freertos.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="relays.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="relays.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="rtos_start.c">
@@ -876,10 +890,58 @@
     <Compile Include="task_uart.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="task_watchdog.c">
+    <Compile Include="thirdparty\cbor\cbor.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="task_watchdog.h">
+    <Compile Include="thirdparty\cbor\cborencoder.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="thirdparty\cbor\cborencoder_close_container_checked.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="thirdparty\cbor\cborencoder_float.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="thirdparty\cbor\cborerrorstrings.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="thirdparty\cbor\cborinternal_p.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="thirdparty\cbor\cborjson.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="thirdparty\cbor\cborparser.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="thirdparty\cbor\cborparser_dup_string.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="thirdparty\cbor\cborparser_float.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="thirdparty\cbor\cborpretty.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="thirdparty\cbor\cborpretty_stdio.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="thirdparty\cbor\cbortojson.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="thirdparty\cbor\cborvalidation.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="thirdparty\cbor\compilersupport_p.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="thirdparty\cbor\open_memstream.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="thirdparty\cbor\tinycbor-version.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="thirdparty\cbor\utf8_p.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="thirdparty\RTOS\freertos\FreeRTOSV10.0.0\rtos_port.c">
@@ -1089,6 +1151,7 @@
     <Folder Include="hpl\wdt\" />
     <Folder Include="hri\" />
     <Folder Include="thirdparty\" />
+    <Folder Include="thirdparty\cbor" />
     <Folder Include="thirdparty\RTOS\" />
     <Folder Include="thirdparty\RTOS\freertos\" />
     <Folder Include="thirdparty\RTOS\freertos\FreeRTOSV10.0.0\" />

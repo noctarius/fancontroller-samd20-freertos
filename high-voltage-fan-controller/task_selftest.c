@@ -4,58 +4,127 @@
  */ 
 
 #include "task_selftest.h"
-#include "messages.h"
 #include "at24c256.h"
 #include "eeprom.h"
+#include "relays.h"
+#include "leds.h"
 
 // Internal task pid
 static xTaskHandle task_selftest_pid = NULL;
 
+static bool runHealthChecks()
+{
+	uint8_t sensor_count = get_temperature_sensor_count();
+	if (sensor_count == 0)
+	{
+		return false;
+	}
+	
+	for (uint8_t i = 0; i < sensor_count; i++)
+	{
+		struct ds18b20_desc *sensor = get_temperature_sensor_by_index(i);
+		if (!sensor->valid)
+			return false;
+	}
+	
+	if (exceeded_expected_update_rate())
+	{
+		return false;
+	}
+	
+	return true;
+}
+
 static void selftest_task(void *pvParameters)
 {
+	#if TASK_ENABLE_WATCHDOG
+		wdt_set_timeout_period(&WDT_0, 1000, 16384);
+		wdt_feed(&WDT_0);
+		wdt_enable(&WDT_0);
+		uart_write("Watchdog: Started.\r\n", 20, 1000);
+	#endif
+	
 	// Self test
-	gpio_set_pin_level(LED_1_R, false);
+	uart_write("Selftest: Running...\r\n", 22, 1000);
+	
+	led1(true, false, false);
 	delay_ms(250);
-	gpio_set_pin_level(LED_1_R, true);
-	delay_ms(250);
-
-	gpio_set_pin_level(LED_1_G, false);
-	delay_ms(250);
-	gpio_set_pin_level(LED_1_G, true);
+	led1_off();
 	delay_ms(250);
 
-	gpio_set_pin_level(LED_1_B, false);
+	led1(false, true, false);
 	delay_ms(250);
-	gpio_set_pin_level(LED_1_B, true);
-	delay_ms(250);
-
-	gpio_set_pin_level(LED_2_R, false);
-	delay_ms(250);
-	gpio_set_pin_level(LED_2_R, true);
+	led1_off();
 	delay_ms(250);
 
-	gpio_set_pin_level(LED_2_G, false);
+	led1(false, false, true);
 	delay_ms(250);
-	gpio_set_pin_level(LED_2_G, true);
-	delay_ms(250);
-
-	gpio_set_pin_level(LED_2_B, false);
-	delay_ms(250);
-	gpio_set_pin_level(LED_2_B, true);
+	led1_off();
 	delay_ms(250);
 
-	gpio_set_pin_level(SWITCH_FAN_S1, true);
+	#if TASK_ENABLE_WATCHDOG
+		wdt_feed(&WDT_0);
+	#endif
+
+	led2(true, false, false);
+	delay_ms(250);
+	led2_off();
+	delay_ms(250);
+
+	led2(false, true, false);
+	delay_ms(250);
+	led2_off();
+	delay_ms(250);
+
+	led2(false, false, true);
+	delay_ms(250);
+	led2_off();
+	delay_ms(250);
+
+	#if TASK_ENABLE_WATCHDOG
+		wdt_feed(&WDT_0);
+	#endif
+
+	relay_fan_speed_1(true);
 	delay_ms(1000);
-	gpio_set_pin_level(SWITCH_FAN_S1, false);
+	relay_fan_speed_off();
+
+	#if TASK_ENABLE_WATCHDOG
+		wdt_feed(&WDT_0);
+	#endif
+
 	delay_ms(1000);
-	gpio_set_pin_level(SWITCH_FAN_S2, true);
+
+	#if TASK_ENABLE_WATCHDOG
+		wdt_feed(&WDT_0);
+	#endif
+
+	relay_fan_speed_2(true);
 	delay_ms(1000);
-	gpio_set_pin_level(SWITCH_FAN_S2, false);
+	relay_fan_speed_off();
+
+	#if TASK_ENABLE_WATCHDOG
+		wdt_feed(&WDT_0);
+	#endif
+	
+	uart_write("Selftest: Passed.\r\n", 19, 1000);
 
 	// Start other subsystems (if enabled)
 	BaseType_t ret;
+	#if TASK_ENABLE_I2C	
+		// Initialize i2c
+		uart_write("I2C: Initializing...\r\n", 22, 1000);
+		init_i2c_task();
+		if ((ret = create_i2c_task()) != pdPASS)
+		{
+			exceptionHandler(500);
+		}
+		uart_write("I2C: Initialized.\r\n", 19, 1000);
+	#endif
+
 	#if TASK_ENABLE_DS18B20
 		// Initialize ds18b20
+		uart_write("Sensor: Initializing...\r\n", 25, 1000);
 		if (!init_temperature_task())
 		{
 			exceptionHandler(1000);
@@ -64,56 +133,78 @@ static void selftest_task(void *pvParameters)
 		{
 			exceptionHandler(500);
 		}
-	#endif
-
-	#if TASK_ENABLE_I2C
-		// Initialize i2c
-		init_i2c_task();
-		if ((ret = create_i2c_task()) != pdPASS)
-		{
-			exceptionHandler(500);
-		}
+		uart_write("Sensor: Initialized.\r\n", 22, 1000);
 	#endif
 
 	#if TASK_ENABLE_MQTT
 		// Initialize ETH / MQTT
+		uart_write("MQTT: Initializing...\r\n", 23, 1000);
 		init_eth_task();
 		if ((ret = create_eth_task()) != pdPASS)
 		{
 			exceptionHandler(500);
 		}
+		uart_write("MQTT: Initialized.\r\n", 20, 1000);
+	#endif
+
+	#if TASK_ENABLE_WATCHDOG
+		wdt_feed(&WDT_0);
 	#endif
 
 	// Give the subsystems time to start up
-	vTaskDelay(ticks1s);
-	
-	// Test write EEPROM
-    uart_write("Initialize EEPROM...\r\n", 22, 1000);
-	struct at24c256_desc AT24_0 =
+	for (uint8_t i = 0; i < 10; i++)
 	{
-		addr: 0x50
-	};
-	
-	uint16_t eeprom_len = sizeof(eeprom_desc);
-	at24_read(&AT24_0, 0, (uint8_t *) &eeprom_desc, eeprom_len, 1000);
-	char buffer[18];
-	int len = freertos_sprintf(
-		&buffer[0],
-		"at24: 0x%02X%02X%02X%02X\r\n",
-		eeprom_desc.header[0],
-		eeprom_desc.header[1],
-		eeprom_desc.header[2],
-		eeprom_desc.header[3]
-	);
-	uart_write(buffer, len, 1000);
+		vTaskDelay(ticks1s);
+		#if TASK_ENABLE_WATCHDOG
+			wdt_feed(&WDT_0);
+		#endif
+	}
 
-	vTaskDelay(ticks250ms);
 	while (1)
 	{
 		vTaskDelay(ticks1s);
-		gpio_set_pin_level(LED_2_G, false);
+		led2_g(true);
 		vTaskDelay(ticks250ms);
-		gpio_set_pin_level(LED_2_G, true);
+		led2_g(false);
+		
+		#if TASK_ENABLE_WATCHDOG
+			// Feed watchdog
+			if (runHealthChecks())
+			{
+				wdt_feed(&WDT_0);
+			}
+		#endif
+		
+		#if TASK_ENABLE_MONITOR
+			//uint16_t outdoor = get_temperature_avg_outdoor();
+			//uint16_t indoor = get_temperature_avg_indoor();
+		
+			
+		
+			for (uint8_t i = 0; i < 5; i++)
+			{
+				struct ds18b20_desc *sensor = get_temperature_sensor_by_index(i);
+				if (sensor == NULL)
+					continue;
+					
+				if (!sensor->valid || !sensor->avail)
+					continue;
+				
+				int8_t sensor_id = eeprom_sensor_find_by_addr(sensor->addr);
+				if (sensor_id == -1)
+					continue;
+				
+				if (!eeprom_sensor_get_indoor(sensor_id))
+					continue;
+				
+				uint16_t threshold = eeprom_sensor_get_security_threshold(sensor_id);
+				if (threshold >= sensor->reading)
+				{
+					relay_fan_speed_2(true);
+					break;
+				}
+			}
+		#endif
 	}
 }
 
@@ -130,6 +221,11 @@ void init_selftest_task()
 void kill_selftest_task()
 {
 	if (task_selftest_pid == NULL) return;
+
+	#if TASK_ENABLE_WATCHDOG
+		wdt_disable(&WDT_0);
+	#endif
+	
 	vTaskDelete(task_selftest_pid);
 	task_selftest_pid = NULL;
 }

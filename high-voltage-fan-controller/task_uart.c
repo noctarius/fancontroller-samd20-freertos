@@ -3,7 +3,6 @@
  */ 
 
 #include "task_uart.h"
-#include "messages.h"
 #include <samd20e18.h>
 
 // Internal task pid
@@ -54,7 +53,7 @@ static void uart_write_0(const char *data, const uint8_t len)
 	}
 }
 
-static int16_t uart_read(uint8_t *target, uint8_t len)
+/*static int16_t uart_read(uint8_t *target, uint8_t len)
 {
 	// Non blocking
 	uint8_t retval = usart_async_is_rx_not_empty(&USART_0);
@@ -63,13 +62,13 @@ static int16_t uart_read(uint8_t *target, uint8_t len)
 		return retval;
 	}
 	return io_read(io_usart0, target, len);
-}
+}*/
 
 static void uart_task(void *pvParameters)
 {
 	(void) pvParameters;
 	
-	uart_write_0(MSG_UART_START, MSG_UART_START_LEN);
+	uart_write_0("UART: Started.\r\n", 16);
 	
 	BaseType_t ret;
 	while (1)

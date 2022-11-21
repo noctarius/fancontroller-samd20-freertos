@@ -34,7 +34,7 @@ static int sendPacket(MQTTClient* c, int length, Timer* timer)
     while (sent < length && !TimerIsExpired(timer))
     {
         rc = c->ipstack->mqttwrite(c->ipstack, &c->buf[sent], length, TimerLeftMS(timer));
-        if (rc < 0)  // there was an error writing the data
+        if (rc <= 0)  // there was an error writing the data
             break;
         sent += rc;
     }
@@ -367,7 +367,7 @@ int MQTTConnect(MQTTClient* c, MQTTPacket_connectData* options)
     if (options == 0)
         options = &default_options; /* set default options if none were supplied */
 
-    c->keepAliveInterval = options->keepAliveInterval;
+    c->keepAliveInterval = options->keepAliveInterval / 2;
     TimerCountdown(&c->ping_timer, c->keepAliveInterval);
     if ((len = MQTTSerialize_connect(c->buf, c->buf_size, options)) <= 0)
         goto exit;

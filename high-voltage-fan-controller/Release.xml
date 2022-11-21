@@ -12,6 +12,12 @@
   <armgcc.compiler.directories.IncludePaths>
     <ListValues>
       <Value>%24(PackRepoDir)\ARM\CMSIS\5.4.0\CMSIS\Core\Include\</Value>
+      <Value>../thirdparty/wiznet</Value>
+      <Value>../thirdparty/wiznet/w5500</Value>
+      <Value>../thirdparty/wiznet/dhcp</Value>
+      <Value>../thirdparty/wiznet/mqtt</Value>
+      <Value>../thirdparty/wiznet/mqtt/MQTTPacket</Value>
+      <Value>../thirdparty/cbor</Value>
       <Value>../Config</Value>
       <Value>../</Value>
       <Value>../examples</Value>
@@ -32,7 +38,6 @@
       <Value>../thirdparty/RTOS/freertos/FreeRTOSV10.0.0/Source/portable/GCC/ARM_CM0</Value>
       <Value>../thirdparty/RTOS/freertos/FreeRTOSV10.0.0/module_config</Value>
       <Value>%24(PackRepoDir)\atmel\SAMD20_DFP\1.3.165\samd20\include</Value>
-      <Value>../lwip/include</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.level>Optimize for size (-Os)</armgcc.compiler.optimization.level>
@@ -50,6 +55,7 @@
     </ListValues>
   </armgcc.linker.libraries.LibrarySearchPaths>
   <armgcc.linker.optimization.GarbageCollectUnusedSections>True</armgcc.linker.optimization.GarbageCollectUnusedSections>
+  <armgcc.linker.memorysettings.ExternalRAM />
   <armgcc.linker.miscellaneous.LinkerFlags>-Tsamd20e18_flash.ld</armgcc.linker.miscellaneous.LinkerFlags>
   <armgcc.assembler.general.IncludePaths>
     <ListValues>

@@ -45,9 +45,15 @@
 #include "socket.h"
 #include "FreeRTOS.h"
 
+uint64_t ticks;
+void vApplicationTickHook()
+{
+	ticks++;
+}
+
 int xTickToMs()
 {
-	return (xTaskGetTickCount() / configTICK_RATE_HZ * 1000);
+	return ticks / portTICK_RATE_MS;
 }
 
 /*
@@ -65,7 +71,7 @@ void TimerInit(Timer* timer) {
  *         that contains the configuration information for the Timer.
  */
 char TimerIsExpired(Timer* timer) {
-	long left = timer->end_time - xTickToMs();
+	long left = timer->end_time - ticks;
 	return (left < 0);
 }
 
@@ -76,7 +82,7 @@ char TimerIsExpired(Timer* timer) {
  *         timeout : setting timeout millisecond.
  */
 void TimerCountdownMS(Timer* timer, unsigned int timeout) {
-	timer->end_time = xTickToMs() + timeout;
+	timer->end_time = ticks + timeout;
 }
 
 /*
@@ -86,7 +92,7 @@ void TimerCountdownMS(Timer* timer, unsigned int timeout) {
  *         timeout : setting timeout millisecond.
  */
 void TimerCountdown(Timer* timer, unsigned int timeout) {
-	timer->end_time = xTickToMs() + (timeout * 1000);
+	timer->end_time = ticks + (timeout * 1000);
 }
 
 /*
@@ -95,7 +101,7 @@ void TimerCountdown(Timer* timer, unsigned int timeout) {
  *         that contains the configuration information for the Timer.
  */
 int TimerLeftMS(Timer* timer) {
-	long left = timer->end_time - xTickToMs();
+	long left = timer->end_time - ticks;
 	return (left < 0) ? 0 : left;
 }
 
@@ -123,7 +129,6 @@ void NewNetwork(Network* n, int sn) {
  */
 int w5x00_read(Network* n, unsigned char* buffer, int len, long time)
 {
-
 	if((getSn_SR(n->my_socket) == SOCK_ESTABLISHED) && (getSn_RX_RSR(n->my_socket)>0))
 		return recv(n->my_socket, buffer, len);
 
@@ -175,4 +180,11 @@ int ConnectNetwork(Network* n, uint8_t* ip, uint16_t port)
 		return SOCK_ERROR;
 
 	return SOCK_OK;
+}
+
+bool network_is_connected(Network *n)
+{
+	uint8_t status;
+	getsockopt(n->my_socket, SO_STATUS, &status);
+	return status == SOCK_ESTABLISHED;
 }

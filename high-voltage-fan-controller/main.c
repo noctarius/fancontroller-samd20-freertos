@@ -1,4 +1,5 @@
 #include "main.h"
+#include "leds.h"
 
 int main(void)
 {
@@ -41,15 +42,6 @@ int main(void)
 	}
 #endif
 
-#if TASK_ENABLE_WATCHDOG
-	// Initialize watchdog
-	init_wdog_task();
-	if ((ret = create_wdog_task()) != pdPASS)
-	{
-		exceptionHandler(500);
-	}
-#endif
-
 	// Start the FreeRTOS task scheduler
 	vTaskStartScheduler();
 
@@ -72,15 +64,9 @@ void vApplicationMallocFailedHook(TaskHandle_t *pxTask, signed char *pcTaskName)
 // Signal exception
 void exceptionHandler(uint32_t blinkMillis)
 {
-	kill_wdog_task();
-
 	// Clear LED status
-	gpio_set_pin_level(LED_1_R, true);
-	gpio_set_pin_level(LED_1_G, true);
-	gpio_set_pin_level(LED_1_B, true);
-	gpio_set_pin_level(LED_2_R, true);
-	gpio_set_pin_level(LED_2_G, true);
-	gpio_set_pin_level(LED_2_B, true);
+	led1_off();
+	led2_off();
 
 	while(1)
 	{

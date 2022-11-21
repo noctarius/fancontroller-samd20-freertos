@@ -5,6 +5,7 @@
 #ifndef __ONEWIRE_H__
 #define __ONEWIRE_H__
 
+#include <atmel_start.h>
 #include <stdbool.h>
 #include <stdint.h>
 

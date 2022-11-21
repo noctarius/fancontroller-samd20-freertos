@@ -17,7 +17,9 @@
 extern "C" {
 #endif
 
-#define TASK_ETH_STACK_SIZE 240
+#define TASK_ETH_STACK_SIZE 256
+
+bool exceeded_expected_update_rate();
 
 void lowlevel_init_eth_task();
 

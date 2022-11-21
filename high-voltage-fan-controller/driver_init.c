@@ -38,7 +38,7 @@ void EXTERNAL_IRQ_0_init(void)
 	                       // <GPIO_PULL_OFF"> Off
 	                       // <GPIO_PULL_UP"> Pull-up
 	                       // <GPIO_PULL_DOWN"> Pull-down
-	                       GPIO_PULL_OFF);
+	                       GPIO_PULL_UP);
 
 	gpio_set_pin_function(ETH_INT, PINMUX_PA02A_EIC_EXTINT2);
 
