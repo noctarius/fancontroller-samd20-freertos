@@ -10,6 +10,16 @@
 static bool status_fan_speed_1 = false;
 static bool status_fan_speed_2 = false;
 
+bool relay_fan_status_1()
+{
+	return status_fan_speed_1;
+}
+
+bool relay_fan_status_2()
+{
+	return status_fan_speed_2;
+}
+
 void relay_fan_speed_1(bool on)
 {
 	if (on && status_fan_speed_2)
