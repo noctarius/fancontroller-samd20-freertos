@@ -117,20 +117,63 @@ static void send_mqtt_status_update(MQTTClient *client)
 	cbor_encoder_init(&encoder, mqtt_buf, sizeof(mqtt_buf), 0);
 	
 	CborEncoder items;
-	cbor_encoder_create_map(&encoder, &items, 2);
+	cbor_encoder_create_map(&encoder, &items, 6);
 	
-	// sensor count
-	uint8_t sensor_count = get_temperature_sensor_count();
-	cbor_encode_text_string(&items, "count", 5);
-	cbor_encode_uint(&items, sensor_count);
+	// uptime
+	uint64_t secs = xTickToMs() / 1000;
+	cbor_encode_text_string(&items, "uptime", 6);
+	cbor_encode_uint(&items, secs);
+	
+	// dhcp ip addr
+	cbor_encode_text_string(&items, "ipv4", 4);
+	int len = freertos_sprintf(
+		buf, "%d.%d.%d.%d", net_info.ip[0], net_info.ip[1], net_info.ip[2], net_info.ip[3]
+	);
+	cbor_encode_text_string(&items, buf, len);
+	
+	// main settings
+	CborEncoder map;
+	cbor_encode_text_string(&items, "main", 4);
+	cbor_encoder_create_map(&items, &map, 1);
+	cbor_encode_text_string(&map, "macaddr", 7);
+	uint8_t tmp[6];
+	eeprom_get_mac_addr(tmp);
+	len = freertos_sprintf(
+		buf, "%02X:%02X:%02X:%02X:%02X:%02X", tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5]
+	);
+	cbor_encode_text_string(&map, buf, len);
+	cbor_encoder_close_container(&items, &map);
+
+	// mqtt settings
+	cbor_encode_text_string(&items, "mqtt", 4);
+	cbor_encoder_create_map(&items, &map, 2);
+	cbor_encode_text_string(&map, "host", 4);
+	eeprom_mqtt_get_addr(tmp);
+	len = freertos_sprintf(
+		buf, "%d.%d.%d.%d", tmp[0], tmp[1], tmp[2], tmp[3]
+	);
+	cbor_encode_text_string(&map, buf, len);
+	cbor_encode_text_string(&map, "port", 4);
+	uint16_t port = eeprom_mqtt_get_port();
+	cbor_encode_uint(&map, port);
+	cbor_encoder_close_container(&items, &map);
+	
+	// switch status
+	cbor_encode_text_string(&items, "switches", 8);
+	cbor_encoder_create_map(&items, &map, 2);
+	cbor_encode_text_string(&map, "switch1", 7);
+	cbor_encode_boolean(&map, relay_fan_status_1());
+	cbor_encode_text_string(&map, "switch2", 7);
+	cbor_encode_boolean(&map, relay_fan_status_2());
+	cbor_encoder_close_container(&items, &map);
 	
 	// sensor addresses
 	CborEncoder array;
+	uint8_t sensor_count = get_temperature_sensor_count();
 	cbor_encode_text_string(&items, "sensors", 7);
 	cbor_encoder_create_array(&items, &array, sensor_count);
 	for (uint8_t i = 0; i < sensor_count; i++)
 	{
-		CborEncoder map;
 		cbor_encoder_create_map(&array, &map, 5);
 		struct ds18b20_desc *sensor = get_temperature_sensor_by_index(i);
 		
@@ -157,7 +200,7 @@ static void send_mqtt_status_update(MQTTClient *client)
 	}
 	cbor_encoder_close_container(&items, &array);
 	cbor_encoder_close_container(&encoder, &items);
-		
+
 	msg.qos = QOS0;
 	msg.retained = 1;
 	msg.payload = mqtt_buf;
@@ -282,12 +325,19 @@ static void msg_handler(MessageData *msg)
 			uint8_t mac_addr[6];
 			memcpy(mac_addr, msg->message->payload, msg->message->payloadlen);
 			eeprom_set_mac_addr(mac_addr);
-			send_mqtt_settings_update(&client);
+			send_mqtt_status_update(&client);
 		}
 		else if (strcmp("main/factoryreset", temp_subtopic) == 0)
 		{
 			eeprom_initialize_storage();
-			send_mqtt_settings_update(&client);
+			send_mqtt_status_update(&client);
+			MQTTDisconnect(&client);
+			__NVIC_SystemReset();
+		}
+		else if (strcmp("main/reboot", temp_subtopic) == 0)
+		{
+			MQTTDisconnect(&client);
+			__NVIC_SystemReset();
 		}
 		else if (strcmp("mqtt/addr", temp_subtopic) == 0)
 		{
@@ -297,7 +347,7 @@ static void msg_handler(MessageData *msg)
 			uint8_t mqtt_addr[4];
 			memcpy(mqtt_addr, msg->message->payload, msg->message->payloadlen);
 			eeprom_mqtt_set_addr(mqtt_addr);
-			send_mqtt_settings_update(&client);
+			send_mqtt_status_update(&client);
 		}
 		else if (strcmp("mqtt/port", temp_subtopic) == 0)
 		{
@@ -306,7 +356,7 @@ static void msg_handler(MessageData *msg)
 			
 			uint16_t mqtt_port = ((uint16_t) ((* (uint8_t *)msg->message->payload) & 0xFF) << 8) | (* (uint8_t *)(msg->message->payload + 1) & 0xFF);
 			eeprom_mqtt_set_port(mqtt_port);
-			send_mqtt_settings_update(&client);
+			send_mqtt_status_update(&client);
 		}
 		else if (strncmp(temp_subtopic, "sensor/", 7) == 0)
 		{
@@ -368,22 +418,27 @@ static void msg_handler(MessageData *msg)
 		else if (strcmp("fan/1/on", temp_subtopic) == 0)
 		{
 			relay_fan_speed_1(true);
+			send_mqtt_status_update(&client);
 		}
 		else if (strcmp("fan/1/off", temp_subtopic) == 0)
 		{
 			relay_fan_speed_1(false);
+			send_mqtt_status_update(&client);
 		}
 		else if (strcmp("fan/2/on", temp_subtopic) == 0)
 		{
 			relay_fan_speed_2(true);
+			send_mqtt_status_update(&client);
 		}
 		else if (strcmp("fan/2/off", temp_subtopic) == 0)
 		{
 			relay_fan_speed_2(false);
+			send_mqtt_status_update(&client);
 		}
 		else if (strcmp("fan/off", temp_subtopic) == 0)
 		{
 			relay_fan_speed_off();
+			send_mqtt_status_update(&client);
 		}
 	}
 }
@@ -517,40 +572,10 @@ void init_eth_task()
 	wiz_NetInfo netInfo;
 	netInfo.dhcp = NETINFO_DHCP;
 	eeprom_get_mac_addr(netInfo.mac);
-
-	if (netInfo.mac[0] == 0x00
-		&& netInfo.mac[1] == 0x00
-		&& netInfo.mac[2] == 0x00
-		&& netInfo.mac[3] == 0x00
-		&& netInfo.mac[4] == 0x00
-		&& netInfo.mac[5] == 0x00)
-	{
-		netInfo.mac[0] = 0x7A;
-		netInfo.mac[1] = 0xD3;
-		netInfo.mac[2] = 0xF0;
-		netInfo.mac[3] = 0x7C;
-		netInfo.mac[4] = 0x0C;
-		netInfo.mac[5] = 0x2E;
-	}
 	wizchip_setnetinfo(&netInfo);
 
 	eeprom_mqtt_get_addr(target_ip);
 	target_port = eeprom_mqtt_get_port();
-	
-	if (target_ip[0] == 0x00
-		&& target_ip[1] == 0x00
-		&& target_ip[2] == 0x00
-		&& target_ip[3] == 0x00)
-	{
-		target_ip[0] = 10;
-		target_ip[1] = 96;
-		target_ip[2] = 0;
-		target_ip[3] = 71;
-	}
-	if (target_port == 0)
-	{
-		target_port = 1883;
-	}
 }
 
 void kill_eth_task()
