@@ -8,9 +8,12 @@
 #include "eeprom.h"
 #include "relays.h"
 #include "leds.h"
+#include "timer.h"
 
 // Internal task pid
 static xTaskHandle task_selftest_pid = NULL;
+
+static Timer timer_threshold;
 
 static bool runHealthChecks()
 {
@@ -160,6 +163,7 @@ static void selftest_task(void *pvParameters)
 		#endif
 	}
 
+	TimerInit(&timer_threshold);
 	while (1)
 	{
 		vTaskDelay(ticks1s);
@@ -176,33 +180,51 @@ static void selftest_task(void *pvParameters)
 		#endif
 		
 		#if TASK_ENABLE_MONITOR
-			//uint16_t outdoor = get_temperature_avg_outdoor();
-			//uint16_t indoor = get_temperature_avg_indoor();
-		
-			
-		
-			for (uint8_t i = 0; i < 5; i++)
+			if (TimerIsExpired(&timer_threshold))
 			{
-				struct ds18b20_desc *sensor = get_temperature_sensor_by_index(i);
-				if (sensor == NULL)
-					continue;
-					
-				if (!sensor->valid || !sensor->avail)
-					continue;
-				
-				int8_t sensor_id = eeprom_sensor_find_by_addr(sensor->addr);
-				if (sensor_id == -1)
-					continue;
-				
-				if (!eeprom_sensor_get_indoor(sensor_id))
-					continue;
-				
-				uint16_t threshold = eeprom_sensor_get_security_threshold(sensor_id);
-				if (threshold >= sensor->reading)
+				uint16_t outdoor = get_temperature_avg_outdoor();
+				uint16_t indoor = get_temperature_avg_indoor();
+
+				if (indoor > 3000)
 				{
 					relay_fan_speed_2(true);
-					break;
 				}
+			
+				if (indoor > 2500 && outdoor < 2000)
+				{
+					relay_fan_speed_2(true);
+				}
+			
+				if (indoor < 1800)
+				{
+					relay_fan_speed_off();
+				}
+			
+				for (uint8_t i = 0; i < 5; i++)
+				{
+					struct ds18b20_desc *sensor = get_temperature_sensor_by_index(i);
+					if (sensor == NULL)
+						continue;
+					
+					if (!sensor->valid || !sensor->avail)
+						continue;
+				
+					int8_t sensor_id = eeprom_sensor_find_by_addr(sensor->addr);
+					if (sensor_id == -1)
+						continue;
+				
+					if (!eeprom_sensor_get_indoor(sensor_id))
+						continue;
+				
+					uint16_t threshold = eeprom_sensor_get_security_threshold(sensor_id);
+					if (threshold > 0 && threshold <= sensor->reading)
+					{
+						relay_fan_speed_2(true);
+						break;
+					}
+				}
+				
+				TimerCountdownMS(&timer_threshold, 10000);
 			}
 		#endif
 	}
