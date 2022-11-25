@@ -214,26 +214,11 @@ int main(void)
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "timer.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-
-/*
- * @brief MQTT MilliTimer handler
- * @note MUST BE register to your system 1m Tick timer handler
- */
-void MilliTimer_Handler(void);
-
-/*
- * @brief Timer structure
- */
-typedef struct Timer Timer;
-struct Timer {
-	unsigned long systick_period;
-	unsigned long end_time;
-};
 
 /*
  * @brief Network structure
@@ -246,15 +231,6 @@ struct Network
 	int (*mqttwrite) (Network*, unsigned char*, int, long);
 	void (*disconnect) (Network*);
 };
-
-/*
- * @brief Timer function
- */
-void TimerInit(Timer*);
-char TimerIsExpired(Timer*);
-void TimerCountdownMS(Timer*, unsigned int);
-void TimerCountdown(Timer*, unsigned int);
-int TimerLeftMS(Timer*);
 
 /*
  * @brief Network interface porting
