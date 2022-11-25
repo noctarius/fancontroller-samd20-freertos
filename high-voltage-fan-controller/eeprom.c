@@ -100,6 +100,17 @@ void eeprom_initialize_storage()
 	eeprom_info.header[2] = 0xCC;
 	eeprom_info.header[3] = 0xDD;
 	eeprom_info.mqtt_server.test = 1;
+	eeprom_info.mac_addr[0] = 0x7A;
+	eeprom_info.mac_addr[1] = 0xD3;
+	eeprom_info.mac_addr[2] = 0xF0;
+	eeprom_info.mac_addr[3] = 0x7C;
+	eeprom_info.mac_addr[4] = 0x0C;
+	eeprom_info.mac_addr[5] = 0x2E;
+	eeprom_info.mqtt_server.addr[0] = 10;
+	eeprom_info.mqtt_server.addr[1] = 96;
+	eeprom_info.mqtt_server.addr[2] = 0;
+	eeprom_info.mqtt_server.addr[3] = 71;
+	eeprom_info.mqtt_server.port = 1883;
 	store_eeprom_content();
     uart_write("EEPROM: Cleared.\r\n", 18, 1000);
 	uart_write("EEPROM: Reinitializing...\r\n", 27, 1000);
@@ -299,6 +310,22 @@ void eeprom_get_mac_addr(const uint8_t mac_addr[6])
 {
 	ensure_initialized();
 	memcpy((void *) mac_addr, eeprom_info.mac_addr, 6);
+	
+	if (mac_addr[0] == 0x00
+		&& mac_addr[1] == 0x00
+		&& mac_addr[2] == 0x00
+		&& mac_addr[3] == 0x00
+		&& mac_addr[4] == 0x00
+		&& mac_addr[5] == 0x00
+	)
+	{
+		*(((uint8_t *) mac_addr) + 0) = 0x7A;
+		*(((uint8_t *) mac_addr) + 1) = 0xD3;
+		*(((uint8_t *) mac_addr) + 2) = 0xF0;
+		*(((uint8_t *) mac_addr) + 3) = 0x7C;
+		*(((uint8_t *) mac_addr) + 4) = 0x0C;
+		*(((uint8_t *) mac_addr) + 5)= 0x2E;
+	}
 }
 
 void eeprom_mqtt_set_addr(const uint8_t addr[4])
@@ -319,10 +346,24 @@ void eeprom_mqtt_get_addr(const uint8_t addr[4])
 {
 	ensure_initialized();
 	memcpy((void *) addr, eeprom_info.mqtt_server.addr, 4);
+	if (addr[0] == 0x00
+		&& addr[1] == 0x00
+		&& addr[2] == 0x00 
+		&& addr[3] == 0x00
+	)
+	{
+		*(((uint8_t *) addr) + 0) = 10;
+		*(((uint8_t *) addr) + 1) = 96;
+		*(((uint8_t *) addr) + 2) = 0;
+		*(((uint8_t *) addr) + 3) = 71;
+	}
 }
 
 uint16_t eeprom_mqtt_get_port()
 {
 	ensure_initialized();
-	return eeprom_info.mqtt_server.port;
+	if (eeprom_info.mqtt_server.port > 0)
+		return eeprom_info.mqtt_server.port;
+		
+	return 1883;
 }
