@@ -299,9 +299,14 @@ static void mqtt_send_updates(MQTTClient *client)
 
 static void msg_handler(MessageData *msg)
 {
+	led1_b(true);
+	
 	// uninteresting topic
 	if (msg->topicName->lenstring.len < 19)
+	{
+		led1_b(false);
 		return;
+	}
 	
 	// main settings topic
 	if (msg->topicName->lenstring.len == 19)
@@ -319,13 +324,13 @@ static void msg_handler(MessageData *msg)
 
 		if (strcmp("main/mac", temp_subtopic) == 0)
 		{
-			if (msg->message->payloadlen != 6)
-				return;
-			
-			uint8_t mac_addr[6];
-			memcpy(mac_addr, msg->message->payload, msg->message->payloadlen);
-			eeprom_set_mac_addr(mac_addr);
-			send_mqtt_status_update(&client);
+			if (msg->message->payloadlen == 6)
+			{
+				uint8_t mac_addr[6];
+				memcpy(mac_addr, msg->message->payload, msg->message->payloadlen);
+				eeprom_set_mac_addr(mac_addr);
+				send_mqtt_status_update(&client);
+			}
 		}
 		else if (strcmp("main/factoryreset", temp_subtopic) == 0)
 		{
@@ -341,77 +346,83 @@ static void msg_handler(MessageData *msg)
 		}
 		else if (strcmp("mqtt/addr", temp_subtopic) == 0)
 		{
-			if (msg->message->payloadlen != 4)
-				return;
-			
-			uint8_t mqtt_addr[4];
-			memcpy(mqtt_addr, msg->message->payload, msg->message->payloadlen);
-			eeprom_mqtt_set_addr(mqtt_addr);
-			send_mqtt_status_update(&client);
+			if (msg->message->payloadlen == 4)
+			{
+				uint8_t mqtt_addr[4];
+				memcpy(mqtt_addr, msg->message->payload, msg->message->payloadlen);
+				eeprom_mqtt_set_addr(mqtt_addr);
+				send_mqtt_status_update(&client);
+			}
 		}
 		else if (strcmp("mqtt/port", temp_subtopic) == 0)
 		{
-			if (msg->message->payloadlen != 2)
-				return;
-			
-			uint16_t mqtt_port = ((uint16_t) ((* (uint8_t *)msg->message->payload) & 0xFF) << 8) | (* (uint8_t *)(msg->message->payload + 1) & 0xFF);
-			eeprom_mqtt_set_port(mqtt_port);
-			send_mqtt_status_update(&client);
+			if (msg->message->payloadlen == 2)
+			{
+				uint16_t mqtt_port = ((uint16_t) ((* (uint8_t *)msg->message->payload) & 0xFF) << 8) | (* (uint8_t *)(msg->message->payload + 1) & 0xFF);
+				eeprom_mqtt_set_port(mqtt_port);
+				send_mqtt_status_update(&client);
+			}
 		}
 		else if (strncmp(temp_subtopic, "sensor/", 7) == 0)
 		{
-			if (subtopic_len < 23)
-				return;
-
-			onewire_addr_t addr = 0;
-			for (uint8_t i = 0; i < 16;)
+			if (subtopic_len >= 23)
 			{
-				addr |= ((onewire_addr_t) (dehex(temp_subtopic[7 + i]) << 4) | dehex(temp_subtopic[7 + i + 1])) << (56 - i / 2 * 8);
-				i += 2;
-			}			
+				onewire_addr_t addr = 0;
+				for (uint8_t i = 0; i < 16;)
+				{
+					addr |= ((onewire_addr_t) (dehex(temp_subtopic[7 + i]) << 4) | dehex(temp_subtopic[7 + i + 1])) << (56 - i / 2 * 8);
+					i += 2;
+				}			
 			
-			int8_t sensor_id = eeprom_sensor_find_by_addr(addr);
-			if (sensor_id == -1)
-			{
-				struct ds18b20_desc *sensor = get_temperature_sensor_by_addr(addr);
-				if (sensor == NULL)
-					return;
-				
-				sensor_id = eeprom_sensor_find_first_unused_index();
+				int8_t sensor_id = eeprom_sensor_find_by_addr(addr);
 				if (sensor_id == -1)
-					return;
+				{
+					struct ds18b20_desc *sensor = get_temperature_sensor_by_addr(addr);
+					if (sensor == NULL)
+					{
+						led1_b(false);
+						return;
+					}
 				
-				if (eeprom_sensor_assignment_slot(sensor_id))
-				{
-					eeprom_sensor_set_addr(sensor_id, addr);
+					sensor_id = eeprom_sensor_find_first_unused_index();
+					if (sensor_id == -1)
+					{
+						led1_b(false);
+						return;
+					}
+				
+					if (eeprom_sensor_assignment_slot(sensor_id))
+					{
+						eeprom_sensor_set_addr(sensor_id, addr);
+					}
 				}
-			}
 
-			if (subtopic_len > 24)
-			{
-				memcpy(temp_subtopic, &subtopic[24], subtopic_len - 24);
-				temp_subtopic[subtopic_len - 24] = 0x00;
+				if (subtopic_len > 24)
+				{
+					memcpy(temp_subtopic, &subtopic[24], subtopic_len - 24);
+					temp_subtopic[subtopic_len - 24] = 0x00;
 
-				if (strcmp("offset", temp_subtopic) == 0)
-				{
-					int16_t offset = ((int16_t) ((* (uint8_t *)msg->message->payload) & 0xFF) << 8) | (* (uint8_t *)(msg->message->payload + 1) & 0xFF);					
-					eeprom_sensor_set_offset(sensor_id, offset);
-				}
-				else if (strcmp("name", temp_subtopic) == 0)
-				{
-					uint8_t length = (* (uint8_t *)msg->message->payload) & 0xFF;
-					memcpy(mqtt_buf, ((uint8_t *)msg->message->payload) + 1, length);
-					eeprom_sensor_set_name(sensor_id, (const char *) mqtt_buf, length);
-				}
-				else if (strcmp("threshold", temp_subtopic) == 0)
-				{
-					uint16_t threshold = ((uint16_t) ((* (uint8_t *)msg->message->payload) & 0xFF) << 8) | (* (uint8_t *)(msg->message->payload + 1) & 0xFF);
-					eeprom_sensor_set_security_threshold(sensor_id, threshold);
-				}
-				else if (strcmp("indoor", temp_subtopic) == 0)
-				{
-					uint8_t indoor = (* (uint8_t *)msg->message->payload) & 0xFF;
-					eeprom_sensor_set_indoor(sensor_id, indoor == 1);
+					if (strcmp("offset", temp_subtopic) == 0)
+					{
+						int16_t offset = ((int16_t) ((* (uint8_t *)msg->message->payload) & 0xFF) << 8) | (* (uint8_t *)(msg->message->payload + 1) & 0xFF);					
+						eeprom_sensor_set_offset(sensor_id, offset);
+					}
+					else if (strcmp("name", temp_subtopic) == 0)
+					{
+						uint8_t length = (* (uint8_t *)msg->message->payload) & 0xFF;
+						memcpy(mqtt_buf, ((uint8_t *)msg->message->payload) + 1, length);
+						eeprom_sensor_set_name(sensor_id, (const char *) mqtt_buf, length);
+					}
+					else if (strcmp("threshold", temp_subtopic) == 0)
+					{
+						uint16_t threshold = ((uint16_t) ((* (uint8_t *)msg->message->payload) & 0xFF) << 8) | (* (uint8_t *)(msg->message->payload + 1) & 0xFF);
+						eeprom_sensor_set_security_threshold(sensor_id, threshold);
+					}
+					else if (strcmp("indoor", temp_subtopic) == 0)
+					{
+						uint8_t indoor = (* (uint8_t *)msg->message->payload) & 0xFF;
+						eeprom_sensor_set_indoor(sensor_id, indoor == 1);
+					}
 				}
 			}
 		}
@@ -441,6 +452,8 @@ static void msg_handler(MessageData *msg)
 			send_mqtt_status_update(&client);
 		}
 	}
+
+	led1_b(false);
 }
 
 static void eth_task(void *pvParameters)

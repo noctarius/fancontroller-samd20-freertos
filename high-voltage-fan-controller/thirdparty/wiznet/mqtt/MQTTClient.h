@@ -36,6 +36,7 @@
 #include "MQTTPacket.h"
 #include "stdio.h"
 #include "mqtt_interface.h"
+#include "leds.h"
 
 #define MAX_PACKET_ID 65535 /* according to the MQTT specification - do not change! */
 

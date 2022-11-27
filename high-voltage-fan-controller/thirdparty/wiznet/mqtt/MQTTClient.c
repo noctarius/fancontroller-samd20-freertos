@@ -498,6 +498,7 @@ exit:
 
 int MQTTPublish(MQTTClient* c, const char* topicName, MQTTMessage* message)
 {
+	led1_g(true);
     int rc = FAILURE;
     Timer timer;
     MQTTString topic = MQTTString_initializer;
@@ -552,6 +553,7 @@ exit:
 #if defined(MQTT_TASK)
 	MutexUnlock(&c->mutex);
 #endif
+	led1_g(false);
     return rc;
 }
 
