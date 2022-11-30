@@ -358,6 +358,36 @@ void system_init(void)
 
 	gpio_set_pin_function(LED_2_G, GPIO_PIN_FUNCTION_OFF);
 
+	// GPIO on PA27
+
+	// Set pin direction to input
+	gpio_set_pin_direction(SENSE_S1, GPIO_DIRECTION_IN);
+
+	gpio_set_pin_pull_mode(SENSE_S1,
+	                       // <y> Pull configuration
+	                       // <id> pad_pull_config
+	                       // <GPIO_PULL_OFF"> Off
+	                       // <GPIO_PULL_UP"> Pull-up
+	                       // <GPIO_PULL_DOWN"> Pull-down
+	                       GPIO_PULL_OFF);
+
+	gpio_set_pin_function(SENSE_S1, GPIO_PIN_FUNCTION_OFF);
+
+	// GPIO on PA28
+
+	// Set pin direction to input
+	gpio_set_pin_direction(SENSE_S2, GPIO_DIRECTION_IN);
+
+	gpio_set_pin_pull_mode(SENSE_S2,
+	                       // <y> Pull configuration
+	                       // <id> pad_pull_config
+	                       // <GPIO_PULL_OFF"> Off
+	                       // <GPIO_PULL_UP"> Pull-up
+	                       // <GPIO_PULL_DOWN"> Pull-down
+	                       GPIO_PULL_OFF);
+
+	gpio_set_pin_function(SENSE_S2, GPIO_PIN_FUNCTION_OFF);
+
 	EXTERNAL_IRQ_0_init();
 
 	SPI_0_init();

@@ -12,11 +12,17 @@ static bool status_fan_speed_2 = false;
 
 bool relay_fan_status_1()
 {
+	/*bool status = gpio_get_pin_level(SENSE_S1);
+	if (status != status_fan_speed_1)
+		status_fan_speed_1 = status;*/
 	return status_fan_speed_1;
 }
 
 bool relay_fan_status_2()
 {
+	/*bool status = gpio_get_pin_level(SENSE_S2);
+	if (status != status_fan_speed_2)
+		status_fan_speed_2 = status;*/
 	return status_fan_speed_2;
 }
 

@@ -30,6 +30,12 @@ void wiznet_port_initialize(SemaphoreHandle_t *eth_isr_semaphore)
 	// Disable chip select
 	gpio_set_pin_level(ETH_SCS, true);
 
+	// Configure RST as output
+	gpio_set_pin_direction(ETH_RST, GPIO_DIRECTION_OUT);
+	
+	// Enable RST line
+	gpio_set_pin_level(ETH_RST, true);
+
 	// Enable SPI bus
 	spi_m_sync_enable(&SPI_0);
 	spi_m_sync_get_io_descriptor(&SPI_0, &io_spi0);
@@ -94,10 +100,8 @@ void wiznet_port_spi_write_burst(uint8_t* buf, uint16_t len)
 
 void wiznet_port_hard_reset(void)
 {
-	wiznet_port_cris_enter();
 	gpio_set_pin_level(ETH_RST, false);
-	delay_us(500);
+	delay_ms(200);
 	gpio_set_pin_level(ETH_RST, true);
-	delay_us(1000);
-	wiznet_port_cris_exit();
+	delay_ms(200);
 }

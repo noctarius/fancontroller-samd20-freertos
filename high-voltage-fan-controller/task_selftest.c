@@ -9,9 +9,11 @@
 #include "relays.h"
 #include "leds.h"
 #include "timer.h"
+#include <timers.h>
 
 // Internal task pid
 static xTaskHandle task_selftest_pid = NULL;
+static TimerHandle_t boot_timer_pid;
 
 static Timer timer_threshold;
 
@@ -38,8 +40,17 @@ static bool runHealthChecks()
 	return true;
 }
 
+static void boot_timer_callback(TimerHandle_t timer)
+{
+	bool s = led2_status_g();
+	led1_g(s);
+	led2_g(s);
+}
+
 static void selftest_task(void *pvParameters)
 {
+	uart_write("Booting system...\r\n", 19, 1000);
+
 	#if TASK_ENABLE_WATCHDOG
 		wdt_set_timeout_period(&WDT_0, 1000, 16384);
 		wdt_feed(&WDT_0);
@@ -88,6 +99,11 @@ static void selftest_task(void *pvParameters)
 		wdt_feed(&WDT_0);
 	#endif
 
+	led1_g(true);
+	led2_g(true);
+	boot_timer_pid = xTimerCreate("BOOT", ticks500ms, pdTRUE, 0, &boot_timer_callback);
+	xTimerStart(boot_timer_pid, 1000);
+
 	relay_fan_speed_1(true);
 	delay_ms(1000);
 	relay_fan_speed_off();
@@ -111,6 +127,7 @@ static void selftest_task(void *pvParameters)
 	#endif
 	
 	uart_write("Selftest: Passed.\r\n", 19, 1000);
+	uart_write("Starting services...\r\n", 22, 1000);
 
 	// Start other subsystems (if enabled)
 	BaseType_t ret;
@@ -155,6 +172,7 @@ static void selftest_task(void *pvParameters)
 	#endif
 
 	// Give the subsystems time to start up
+	uart_write("Waiting for services to finish starting...\r\n", 44, 1000);
 	for (uint8_t i = 0; i < 10; i++)
 	{
 		vTaskDelay(ticks1s);
@@ -162,6 +180,11 @@ static void selftest_task(void *pvParameters)
 			wdt_feed(&WDT_0);
 		#endif
 	}
+
+	xTimerStop(boot_timer_pid, 1000);
+	xTimerDelete(boot_timer_pid, 1000);
+	led1_g(false);
+	led2_g(false);
 
 	TimerInit(&timer_threshold);
 	while (1)

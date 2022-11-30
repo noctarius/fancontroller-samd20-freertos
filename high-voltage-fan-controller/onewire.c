@@ -159,11 +159,15 @@ bool onewire_write(struct onewire_desc *const dev, uint8_t v)
 	
 	taskENTER_CRITICAL();
 	for (uint8_t mask = 0x01; mask; mask <<= 1)
+	{
 		if (!_onewire_write_bit(dev, (mask & v) ? 1 : 0))
 		{
 			taskEXIT_CRITICAL();
 			return false;
 		}
+
+		taskYIELD();
+	}
 
 	taskEXIT_CRITICAL();
 	return true;
@@ -192,6 +196,8 @@ int onewire_read(struct onewire_desc *const dev)
 			return -1;
 		else if (bit)
 			res |= mask;
+
+		taskYIELD();
 	}
 	
 	return res;
@@ -302,6 +308,8 @@ onewire_addr_t onewire_search_next(onewire_search_t *search)
 				rom_byte_number++;
 				rom_byte_mask = 1;
 			}
+
+			taskYIELD();
 		} while (rom_byte_number < 8);
 
 		if (!(id_bit_number < 65))

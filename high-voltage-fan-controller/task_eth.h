@@ -17,7 +17,7 @@
 extern "C" {
 #endif
 
-#define TASK_ETH_STACK_SIZE 256
+#define TASK_ETH_STACK_SIZE 340
 
 bool exceeded_expected_update_rate();
 

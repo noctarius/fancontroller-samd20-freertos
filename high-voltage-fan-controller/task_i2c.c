@@ -4,6 +4,7 @@
 
 #include "task_i2c.h"
 #include <string.h>
+#include "leds.h"
 
 // Internal task pid
 static xTaskHandle task_i2c_pid = NULL;
@@ -86,11 +87,13 @@ static void tx_cb_I2C_0(const struct i2c_m_async_desc *const i2c)
 		page_in_progress = false;
 	else
 		transact_in_progress = false;
+	led2_r(false);
 }
 
 static void rx_cb_I2C_0(const struct i2c_m_async_desc *const i2c)
 {
 	page_in_progress = false;
+	led2_b(false);
 }
 
 static void err_cb_I2C_0(const struct i2c_m_async_desc *const i2c)
@@ -99,6 +102,8 @@ static void err_cb_I2C_0(const struct i2c_m_async_desc *const i2c)
 	transact_in_progress = false;
 	page_in_progress = false;
 	write_before_read_in_progress = false;
+	led2_r(false);
+	led2_b(false);
 }
 
 static inline int _i2c_write(const uint8_t addr, const uint8_t *data, const uint16_t count)
@@ -112,6 +117,7 @@ static inline int _i2c_write(const uint8_t addr, const uint8_t *data, const uint
 	if (count > MAX_FRAME_SIZE)
 		return -3;
 	
+	led2_r(true);
 	transact_in_progress = true;
 		
 	i2c_m_async_set_slaveaddr(&I2C_0, addr, I2C_M_SEVEN);
@@ -141,6 +147,7 @@ static inline int _i2c_write_reg(const uint8_t addr, const uint16_t reg_addr, co
 	transact_buf_remaining = count;
 	while (transact_buf_remaining > 0)
 	{
+		led2_r(true);
 		int32_t written = write_page(&I2C_0, addr, reg_addr + transact_buf_offset, (uint8_t *) (data + transact_buf_offset), transact_buf_remaining);
 		if (written < 0)
 		{
@@ -155,6 +162,8 @@ static inline int _i2c_write_reg(const uint8_t addr, const uint16_t reg_addr, co
 		
 		transact_buf_remaining -= (uint16_t) written;
 		transact_buf_offset += (uint16_t) written;
+
+		taskYIELD();
 	}
 	transact_in_progress = false;
 	return transact_buf_offset;
@@ -171,6 +180,7 @@ static inline int _i2c_read(const uint8_t addr, const uint8_t *data, const uint1
 	if (count > MAX_FRAME_SIZE)
 		return -3;
 	
+	led2_b(true);
 	transact_in_progress = true;
 
 	uint8_t remaining = min(MAX_FRAME_SIZE, count);
@@ -203,6 +213,7 @@ static inline int _i2c_read_reg(const uint8_t addr, const uint16_t reg_addr, con
 	transact_buf_remaining = count;
 	while (transact_buf_remaining > 0)
 	{
+		led2_b(true);
 		int32_t read = read_page(&I2C_0, addr, reg_addr + transact_buf_offset, (uint8_t *) (data + transact_buf_offset), transact_buf_remaining);
 		if (read < 0)
 		{
@@ -217,6 +228,7 @@ static inline int _i2c_read_reg(const uint8_t addr, const uint16_t reg_addr, con
 		
 		transact_buf_remaining -= (uint16_t) read;
 		transact_buf_offset += (uint16_t) read;
+		taskYIELD();
 	}
 	transact_in_progress = false;
 	return transact_buf_offset;

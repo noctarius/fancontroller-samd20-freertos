@@ -10,15 +10,27 @@
 
 void led1_r(bool v);
 
+bool led1_status_r();
+
 void led1_g(bool v);
+
+bool led1_status_g();
 
 void led1_b(bool v);
 
+bool led1_status_b();
+
 void led2_r(bool v);
+
+bool led2_status_r();
 
 void led2_g(bool v);
 
+bool led2_status_g();
+
 void led2_b(bool v);
+
+bool led2_status_b();
 
 void led1(bool r, bool g, bool b);
 

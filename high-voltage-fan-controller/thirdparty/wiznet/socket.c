@@ -54,6 +54,7 @@
 //
 //*****************************************************************************
 #include "socket.h"
+#include "leds.h"
 
 //M20150401 : Typing Error
 //#define SOCK_ANY_PORT_NUM  0xC000;
@@ -475,11 +476,13 @@ int32_t recv(uint8_t sn, uint8_t * buf, uint16_t len)
    else sock_pack_info[sn] = PACK_COMPLETED;
    if(getSn_MR(sn) & Sn_MR_ALIGN) sock_remained_size[sn] = 0;
    //len = recvsize;
-#else   
-   if(recvsize < len) len = recvsize;   
-   wiz_recv_data(sn, buf, len);
-   setSn_CR(sn,Sn_CR_RECV);
-   while(getSn_CR(sn));
+#else
+	led1_r(true);
+    if(recvsize < len) len = recvsize;   
+    wiz_recv_data(sn, buf, len);
+    setSn_CR(sn,Sn_CR_RECV);
+    while(getSn_CR(sn));
+	led1_r(false);
 #endif
      
    //M20150409 : Explicit Type Casting

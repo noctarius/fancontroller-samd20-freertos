@@ -205,6 +205,8 @@ static void send_mqtt_status_update(MQTTClient *client)
 	msg.retained = 1;
 	msg.payload = mqtt_buf;
 	msg.payloadlen = cbor_encoder_get_buffer_size(&encoder, mqtt_buf);
+
+	taskYIELD();
 	MQTTPublish(client, "fancontrol/update\0", &msg);
 }
 
@@ -233,6 +235,8 @@ static void send_mqtt_indoor_outdoor_update(MQTTClient *client)
 	msg.retained = 0;
 	msg.payload = mqtt_buf;
 	msg.payloadlen = cbor_encoder_get_buffer_size(&encoder, mqtt_buf);
+
+	taskYIELD();
 	MQTTPublish(client, "fancontrol/tempdiff\0", &msg);
 }
 
@@ -274,6 +278,8 @@ static void send_mqtt_sensor_update(MQTTClient *client, struct ds18b20_desc *sen
 	msg.retained = 0;
 	msg.payload = (void *) mqtt_buf;
 	msg.payloadlen = cbor_encoder_get_buffer_size(&encoder, mqtt_buf);
+
+	taskYIELD();
 	MQTTPublish(client, buf, &msg);
 }
 
@@ -281,9 +287,11 @@ static void mqtt_send_updates(MQTTClient *client)
 {
 	// General status packet
 	send_mqtt_status_update(client);
+	taskYIELD();
 	
 	// Indoor-Outdoor status packet
 	send_mqtt_indoor_outdoor_update(client);
+	taskYIELD();
 	
 	uint8_t sensor_count = get_temperature_sensor_count();
 	for (uint8_t i = 0; i < sensor_count; i++)
@@ -294,6 +302,7 @@ static void mqtt_send_updates(MQTTClient *client)
 		
 		// Sensor status packet
 		send_mqtt_sensor_update(client, sensor);
+		taskYIELD();
 	}
 }
 
@@ -461,9 +470,9 @@ static void eth_task(void *pvParameters)
 	(void) pvParameters;
 	
 	uint8_t reg = getVERSIONR();
-	if (reg != 0x04)
+	if (reg == 0x04)
 	{
-		// Error
+		uart_write("MQTT: Found W5500\r\n", 19, 1000);
 	}
 		
 	DHCP_init(7, dhcp_buf);
@@ -482,7 +491,10 @@ static void eth_task(void *pvParameters)
 		wizchip_getnetinfo(&net_info);
 		if (!mqtt_connected && valid_ip_addr(&net_info))
 		{
-			int len = freertos_sprintf(buf, "MQTT: Local IP %d.%d.%d.%d\r\n", net_info.ip[0], net_info.ip[1], net_info.ip[2], net_info.ip[3]);
+			int len = freertos_sprintf(buf, "MQTT: Local MAC %02X:%02X:%02X:%02X:%02X:%02X\r\n", net_info.mac[0], net_info.mac[1], net_info.mac[2], net_info.mac[3], net_info.mac[4], net_info.mac[5]);
+			uart_write(buf, len, 1000);
+			
+			len = freertos_sprintf(buf, "MQTT: Local IP %d.%d.%d.%d\r\n", net_info.ip[0], net_info.ip[1], net_info.ip[2], net_info.ip[3]);
 			uart_write(buf, len, 1000);
 			
 			len = freertos_sprintf(buf, "MQTT: Connect to %d.%d.%d.%d\r\n", target_ip[0], target_ip[1], target_ip[2], target_ip[3]);
@@ -511,12 +523,17 @@ static void eth_task(void *pvParameters)
 				
 				MQTTSubscribe(&client, "fancontrol/settings\0", QOS0, &msg_handler);
 				MQTTSubscribe(&client, "fancontrol/settings/#\0", QOS0, &msg_handler);
+
+				len = freertos_sprintf(buf, "MQTT: Connected to %d.%d.%d.%d\r\n", target_ip[0], target_ip[1], target_ip[2], target_ip[3]);
+				uart_write(buf, len, 1000);
+				TimerCountdownMS(&timer_update, 10000);
+				send_mqtt_settings_update(&client);
 			}
-			
-			len = freertos_sprintf(buf, "MQTT: Connected to %d.%d.%d.%d\r\n", target_ip[0], target_ip[1], target_ip[2], target_ip[3]);
-			uart_write(buf, len, 1000);
-			TimerCountdownMS(&timer_update, 10000);
-			send_mqtt_settings_update(&client);
+			else
+			{
+				uart_write("MQTT: Connect failed, retrying...\r\n", 36, 1000);
+				TimerCountdownMS(&timer_update, 10000);
+			}
 		}
 		else if (mqtt_connected)
 		{
@@ -536,7 +553,7 @@ static void eth_task(void *pvParameters)
 		if (mqtt_connected && TimerIsExpired(&timer_update))
 		{
 			mqtt_send_updates(&client);
-			TimerCountdownMS(&timer_update, 60000);
+			TimerCountdownMS(&timer_update, 20000);
 			TimerCountdownMS(&timer_last_update, 180000);
 		} else if (!mqtt_connected && TimerIsExpired(&timer_update))
 		{
