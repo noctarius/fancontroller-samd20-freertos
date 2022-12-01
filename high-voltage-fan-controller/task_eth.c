@@ -432,6 +432,11 @@ static void msg_handler(MessageData *msg)
 						uint8_t indoor = (* (uint8_t *)msg->message->payload) & 0xFF;
 						eeprom_sensor_set_indoor(sensor_id, indoor == 1);
 					}
+					else if (strcmp("weight", temp_subtopic) == 0)
+					{
+						uint8_t weight = (* (uint8_t *)msg->message->payload) & 0xFF;
+						eeprom_sensor_set_weight(sensor_id, weight);
+					}
 				}
 			}
 		}

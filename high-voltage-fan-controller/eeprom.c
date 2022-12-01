@@ -12,7 +12,9 @@
 typedef struct __attribute__((__packed__))
 {
 	onewire_addr_t	addr;
-	char			name[256];
+	char			name[100];
+	uint8_t			weight;
+	uint8_t			reserved[155];
 	uint8_t			name_len;
 	uint16_t		sec_threshold;
 	int16_t			offset;
@@ -169,12 +171,22 @@ void eeprom_sensor_unassignment_slot(uint8_t sensor_id)
 	store_eeprom_content();
 }
 
+void eeprom_sensor_set_weight(const uint8_t sensor_id, const uint8_t weight)
+{
+	if (sensor_id == -1)
+	return;
+	
+	ensure_initialized();
+	eeprom_info.sensors[sensor_id].weight = weight;
+	store_eeprom_content();
+}
+
 void eeprom_sensor_set_name(const uint8_t sensor_id, const char *name, const uint8_t name_len)
 {
 	if (sensor_id == -1)
 		return;
 	
-	if (name_len > 256)
+	if (name_len > 100)
 		return;
 
 	ensure_initialized();
@@ -236,6 +248,18 @@ void eeprom_sensor_set_indoor(const uint8_t sensor_id, const bool indoor)
 
 	eeprom_info.sensors[sensor_id].flags.indoor = indoor ? 1 : 0;
 	store_eeprom_content();
+}
+
+uint8_t eeprom_sensor_get_weight(const int8_t sensor_id)
+{
+	if (sensor_id == -1)
+		return 1;
+	
+	ensure_initialized();
+	if (!eeprom_info.sensors[sensor_id].flags.assigned)
+		return 1;
+
+	return eeprom_info.sensors[sensor_id].weight;
 }
 
 uint8_t eeprom_sensor_get_name(const int8_t sensor_id, const char *name)

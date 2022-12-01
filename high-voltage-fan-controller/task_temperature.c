@@ -145,8 +145,12 @@ uint16_t get_temperature_avg_outdoor()
 		int8_t sensor_id = eeprom_sensor_find_by_addr(sensor->addr);
 		if (!eeprom_sensor_get_indoor(sensor_id))
 		{
-			sum += sensor->reading;
-			count++;
+			uint8_t weight = eeprom_sensor_get_weight(sensor_id);
+			for (; weight > 0; weight--)
+			{
+				sum += sensor->reading;
+				count++;
+			}
 		}
 	}
 
@@ -170,8 +174,12 @@ uint16_t get_temperature_avg_indoor()
 		int8_t sensor_id = eeprom_sensor_find_by_addr(sensor->addr);
 		if (eeprom_sensor_get_indoor(sensor_id))
 		{
-			sum += sensor->reading;
-			count++;
+			uint8_t weight = eeprom_sensor_get_weight(sensor_id);
+			for (; weight > 0; weight--)
+			{
+				sum += sensor->reading;
+				count++;
+			}
 		}
 	}
 	

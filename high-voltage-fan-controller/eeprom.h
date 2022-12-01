@@ -36,6 +36,8 @@ void eeprom_sensor_set_offset(const uint8_t sensor_id, const int16_t offset);
 
 void eeprom_sensor_set_indoor(const uint8_t sensor_id, const bool indoor);
 
+void eeprom_sensor_set_weight(const uint8_t sensor_id, const uint8_t weight);
+
 uint8_t eeprom_sensor_get_name(const int8_t sensor_id, const char *name);
 
 onewire_addr_t eeprom_sensor_get_addr(const int8_t sensor_id);
@@ -45,6 +47,8 @@ uint16_t eeprom_sensor_get_security_threshold(const int8_t sensor_id);
 int16_t eeprom_sensor_get_offset(const int8_t sensor_id);
 
 bool eeprom_sensor_get_indoor(const int8_t sensor_id);
+
+uint8_t eeprom_sensor_get_weight(const int8_t sensor_id);
 
 void eeprom_set_mac_addr(uint8_t mac_addr[6]);
 
