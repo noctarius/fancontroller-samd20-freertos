@@ -8,14 +8,22 @@
 
 #include <stdbool.h>
 
-bool relay_fan_status_1();
+bool relay_fan_channel_1_status();
 
-bool relay_fan_status_2();
+bool relay_fan_channel_2_status();
 
-void relay_fan_speed_1(bool on);
+bool relay_fan_channel_1_sensing();
 
-void relay_fan_speed_2(bool on);
+bool relay_fan_channel_2_sensing();
 
-void relay_fan_speed_off();
+bool relay_fan_channel_1_failure();
+
+bool relay_fan_channel_2_failure();
+
+void relay_fan_channel_1_enable(bool on);
+
+void relay_fan_channel_2_enable(bool on);
+
+void relay_fan_channels_off();
 
 #endif /* __RELAYS_H__ */

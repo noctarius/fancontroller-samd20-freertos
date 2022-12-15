@@ -7,54 +7,68 @@
 #include "relays.h"
 #include "task_uart.h"
 
-static bool status_fan_speed_1 = false;
-static bool status_fan_speed_2 = false;
-
-bool relay_fan_status_1()
+inline bool relay_fan_channel_1_status()
 {
-	/*bool status = gpio_get_pin_level(SENSE_S1);
-	if (status != status_fan_speed_1)
-		status_fan_speed_1 = status;*/
-	return status_fan_speed_1;
+	return gpio_get_pin_level(SWITCH_FAN_S1);
 }
 
-bool relay_fan_status_2()
+inline bool relay_fan_channel_2_status()
 {
-	/*bool status = gpio_get_pin_level(SENSE_S2);
-	if (status != status_fan_speed_2)
-		status_fan_speed_2 = status;*/
-	return status_fan_speed_2;
+	return gpio_get_pin_level(SWITCH_FAN_S2);
 }
 
-void relay_fan_speed_1(bool on)
+inline bool relay_fan_channel_1_sensing()
 {
-	if (on && status_fan_speed_2)
-		relay_fan_speed_2(false);
+	return !gpio_get_pin_level(SENSE_S1);
+}
+
+inline bool relay_fan_channel_2_sensing()
+{
+	return !gpio_get_pin_level(SENSE_S2);
+}
+
+inline bool relay_fan_channel_1_failure()
+{
+	return relay_fan_channel_1_status() != relay_fan_channel_1_sensing();
+}
+
+inline bool relay_fan_channel_2_failure()
+{
+	return relay_fan_channel_2_status() != relay_fan_channel_2_sensing();
+}
+
+void relay_fan_channel_1_enable(bool on)
+{
+	if (on && relay_fan_channel_2_status())
+		relay_fan_channel_2_enable(false);
 
 	gpio_set_pin_level(SWITCH_FAN_S1, on);
-	status_fan_speed_1 = on;
+
 	if (on)
-		uart_write("Fan: Speed 1 switched on\r\n", 26, 1000);
+		uart_write("Fan: Channel 1 switched on\r\n", 28, 1000);
 	else
-		uart_write("Fan: Speed 1 switched off\r\n", 27, 1000);
+		uart_write("Fan: Channel 1 switched off\r\n", 29, 1000);
 }
 
-void relay_fan_speed_2(bool on)
+void relay_fan_channel_2_enable(bool on)
 {
-	if (on && status_fan_speed_1)
-		relay_fan_speed_1(false);
+	if (on && relay_fan_channel_1_status())
+		relay_fan_channel_1_enable(false);
 
 	gpio_set_pin_level(SWITCH_FAN_S2, on);
-	status_fan_speed_2 = on;
+
 	if (on)
-		uart_write("Fan: Speed 2 switched on\r\n", 26, 1000);
+		uart_write("Fan: Channel 2 switched on\r\n", 28, 1000);
 	else
-		uart_write("Fan: Speed 2 switched off\r\n", 27, 1000);
+		uart_write("Fan: Channel 2 switched off\r\n", 29, 1000);
 }
 
-void relay_fan_speed_off()
+void relay_fan_channels_off()
 {
-	relay_fan_speed_1(false);
-	relay_fan_speed_2(false);
+	if (relay_fan_channel_1_status())
+		relay_fan_channel_1_enable(false);
+
+	if (relay_fan_channel_2_status())
+		relay_fan_channel_2_enable(false);
 }
 
