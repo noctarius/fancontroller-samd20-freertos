@@ -259,7 +259,8 @@ uint8_t eeprom_sensor_get_weight(const int8_t sensor_id)
 	if (!eeprom_info.sensors[sensor_id].flags.assigned)
 		return 1;
 
-	return eeprom_info.sensors[sensor_id].weight;
+	uint8_t weight = eeprom_info.sensors[sensor_id].weight;
+	return weight > 0 ? weight : 1;
 }
 
 uint8_t eeprom_sensor_get_name(const int8_t sensor_id, const char *name)
