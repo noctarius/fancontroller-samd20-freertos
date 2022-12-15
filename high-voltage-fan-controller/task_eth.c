@@ -162,9 +162,9 @@ static void send_mqtt_status_update(MQTTClient *client)
 	cbor_encode_text_string(&items, "switches", 8);
 	cbor_encoder_create_map(&items, &map, 2);
 	cbor_encode_text_string(&map, "switch1", 7);
-	cbor_encode_boolean(&map, relay_fan_status_1());
+	cbor_encode_boolean(&map, relay_fan_channel_1_status());
 	cbor_encode_text_string(&map, "switch2", 7);
-	cbor_encode_boolean(&map, relay_fan_status_2());
+	cbor_encode_boolean(&map, relay_fan_channel_2_status());
 	cbor_encoder_close_container(&items, &map);
 	
 	// sensor addresses
@@ -206,7 +206,7 @@ static void send_mqtt_status_update(MQTTClient *client)
 	msg.payload = mqtt_buf;
 	msg.payloadlen = cbor_encoder_get_buffer_size(&encoder, mqtt_buf);
 
-	taskYIELD();
+	vTaskDelay(ticks20ms);
 	MQTTPublish(client, "fancontrol/update\0", &msg);
 }
 
@@ -214,8 +214,8 @@ static void send_mqtt_indoor_outdoor_update(MQTTClient *client)
 {
 	uart_write("MQTT: Send Temperature Difference Update\r\n", 42, 1000);
 
-	uint16_t outdoor = get_temperature_avg_outdoor();
-	uint16_t indoor = get_temperature_avg_indoor();
+	int32_t outdoor = get_temperature_avg_outdoor();
+	int32_t indoor = get_temperature_avg_indoor();
 
 	CborEncoder encoder;
 	cbor_encoder_init(&encoder, mqtt_buf, sizeof(mqtt_buf), 0);
@@ -224,10 +224,10 @@ static void send_mqtt_indoor_outdoor_update(MQTTClient *client)
 	cbor_encoder_create_map(&encoder, &map, 2);
 	
 	cbor_encode_text_string(&map, "outdoor", 7);
-	cbor_encode_uint(&map, outdoor);
+	cbor_encode_int(&map, outdoor);
 
 	cbor_encode_text_string(&map, "indoor", 6);
-	cbor_encode_uint(&map, indoor);
+	cbor_encode_int(&map, indoor);
 	
 	cbor_encoder_close_container(&encoder, &map);
 
@@ -236,7 +236,7 @@ static void send_mqtt_indoor_outdoor_update(MQTTClient *client)
 	msg.payload = mqtt_buf;
 	msg.payloadlen = cbor_encoder_get_buffer_size(&encoder, mqtt_buf);
 
-	taskYIELD();
+	vTaskDelay(ticks20ms);
 	MQTTPublish(client, "fancontrol/tempdiff\0", &msg);
 }
 
@@ -273,13 +273,13 @@ static void send_mqtt_sensor_update(MQTTClient *client, struct ds18b20_desc *sen
 
 	CborEncoder encoder;
 	cbor_encoder_init(&encoder, mqtt_buf, sizeof(mqtt_buf), 0);
-	cbor_encode_uint(&encoder, sensor->reading);
+	cbor_encode_int(&encoder, sensor->reading);
 	
 	msg.retained = 0;
 	msg.payload = (void *) mqtt_buf;
 	msg.payloadlen = cbor_encoder_get_buffer_size(&encoder, mqtt_buf);
 
-	taskYIELD();
+	vTaskDelay(ticks20ms);
 	MQTTPublish(client, buf, &msg);
 }
 
@@ -287,11 +287,11 @@ static void mqtt_send_updates(MQTTClient *client)
 {
 	// General status packet
 	send_mqtt_status_update(client);
-	taskYIELD();
+	vTaskDelay(ticks20ms);
 	
 	// Indoor-Outdoor status packet
 	send_mqtt_indoor_outdoor_update(client);
-	taskYIELD();
+	vTaskDelay(ticks20ms);
 	
 	uint8_t sensor_count = get_temperature_sensor_count();
 	for (uint8_t i = 0; i < sensor_count; i++)
@@ -302,7 +302,7 @@ static void mqtt_send_updates(MQTTClient *client)
 		
 		// Sensor status packet
 		send_mqtt_sensor_update(client, sensor);
-		taskYIELD();
+		vTaskDelay(ticks20ms);
 	}
 }
 
@@ -442,27 +442,27 @@ static void msg_handler(MessageData *msg)
 		}
 		else if (strcmp("fan/1/on", temp_subtopic) == 0)
 		{
-			relay_fan_speed_1(true);
+			relay_fan_channel_1_enable(true);
 			send_mqtt_status_update(&client);
 		}
 		else if (strcmp("fan/1/off", temp_subtopic) == 0)
 		{
-			relay_fan_speed_1(false);
+			relay_fan_channel_1_enable(false);
 			send_mqtt_status_update(&client);
 		}
 		else if (strcmp("fan/2/on", temp_subtopic) == 0)
 		{
-			relay_fan_speed_2(true);
+			relay_fan_channel_2_enable(true);
 			send_mqtt_status_update(&client);
 		}
 		else if (strcmp("fan/2/off", temp_subtopic) == 0)
 		{
-			relay_fan_speed_2(false);
+			relay_fan_channel_2_enable(false);
 			send_mqtt_status_update(&client);
 		}
 		else if (strcmp("fan/off", temp_subtopic) == 0)
 		{
-			relay_fan_speed_off();
+			relay_fan_channels_off();
 			send_mqtt_status_update(&client);
 		}
 	}

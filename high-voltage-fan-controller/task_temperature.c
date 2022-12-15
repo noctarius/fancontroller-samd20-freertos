@@ -131,10 +131,10 @@ struct ds18b20_desc *get_temperature_sensor_by_addr(onewire_addr_t addr)
 	return NULL;
 }
 
-uint16_t get_temperature_avg_outdoor()
+int32_t get_temperature_avg_outdoor()
 {
-	uint16_t sum = 0;
-	uint16_t count = 0;
+	int32_t sum = 0;
+	int32_t count = 0;
 	uint8_t sensor_count = get_temperature_sensor_count();
 	for (uint8_t i = 0; i < sensor_count; i++)
 	{
@@ -160,10 +160,10 @@ uint16_t get_temperature_avg_outdoor()
 	return (sum / count);
 }
 
-uint16_t get_temperature_avg_indoor()
+int32_t get_temperature_avg_indoor()
 {
-	uint16_t sum = 0;
-	uint16_t count = 0;
+	int32_t sum = 0;
+	int32_t count = 0;
 	uint8_t sensor_count = get_temperature_sensor_count();
 	for (uint8_t i = 0; i < sensor_count; i++)
 	{

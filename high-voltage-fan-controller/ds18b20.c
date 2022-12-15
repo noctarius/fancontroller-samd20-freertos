@@ -52,7 +52,7 @@ bool ds18b20_get_reading(struct ds18b20_desc *dev, int16_t offset)
 	
 	dev->valid = true;
 	double reading = raw * 0.0625;
-	dev->reading = ((uint16_t) (reading * 100)) + offset;
+	dev->reading = ((int32_t) (reading * 100)) + offset;
 	
 	if (reading < -25. || reading > 125.)
 	{

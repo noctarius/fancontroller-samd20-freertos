@@ -23,9 +23,9 @@ struct ds18b20_desc *get_temperature_sensor_by_addr(onewire_addr_t addr);
 
 uint8_t get_temperature_sensor_count();
 
-uint16_t get_temperature_avg_outdoor();
+int32_t get_temperature_avg_outdoor();
 
-uint16_t get_temperature_avg_indoor();
+int32_t get_temperature_avg_indoor();
 
 BaseType_t create_temperature_task();
 

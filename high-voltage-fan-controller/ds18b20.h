@@ -13,11 +13,11 @@ extern "C" {
 #endif
 
 struct ds18b20_desc {
-	bool avail;
-	uint16_t reading;
-	onewire_addr_t addr;
-	struct onewire_desc * ow;
-	bool valid;
+	bool				avail;
+	int32_t				reading;
+	onewire_addr_t		addr;
+	struct onewire_desc	*ow;
+	bool				valid;
 };
 
 bool ds18b20_initiate_reading(struct ds18b20_desc *dev);

@@ -104,9 +104,9 @@ static void selftest_task(void *pvParameters)
 	boot_timer_pid = xTimerCreate("BOOT", ticks500ms, pdTRUE, 0, &boot_timer_callback);
 	xTimerStart(boot_timer_pid, 1000);
 
-	relay_fan_speed_1(true);
+	relay_fan_channel_1_enable(true);
 	delay_ms(1000);
-	relay_fan_speed_off();
+	relay_fan_channels_off();
 
 	#if TASK_ENABLE_WATCHDOG
 		wdt_feed(&WDT_0);
@@ -118,9 +118,9 @@ static void selftest_task(void *pvParameters)
 		wdt_feed(&WDT_0);
 	#endif
 
-	relay_fan_speed_2(true);
+	relay_fan_channel_2_enable(true);
 	delay_ms(1000);
-	relay_fan_speed_off();
+	relay_fan_channels_off();
 
 	#if TASK_ENABLE_WATCHDOG
 		wdt_feed(&WDT_0);
@@ -205,22 +205,33 @@ static void selftest_task(void *pvParameters)
 		#if TASK_ENABLE_MONITOR
 			if (TimerIsExpired(&timer_threshold))
 			{
-				uint16_t outdoor = get_temperature_avg_outdoor();
-				uint16_t indoor = get_temperature_avg_indoor();
+				bool sense = relay_fan_channel_1_sensing();
+				if (sense)
+				{
+					uart_write("Channel 1 enabled via Sensing\r\n", 31, 1000);
+				}
+				sense = relay_fan_channel_2_sensing();
+				if (sense)
+				{
+					uart_write("Channel 2 enabled via Sensing\r\n", 31, 1000);
+				}
+
+				int32_t outdoor = get_temperature_avg_outdoor();
+				int32_t indoor = get_temperature_avg_indoor();
 
 				if (indoor > 3000)
 				{
-					relay_fan_speed_2(true);
+					relay_fan_channel_2_enable(true);
 				}
 			
 				if (indoor > 2500 && outdoor < 2000)
 				{
-					relay_fan_speed_2(true);
+					relay_fan_channel_2_enable(true);
 				}
 			
 				if (indoor < 1800)
 				{
-					relay_fan_speed_off();
+					relay_fan_channels_off();
 				}
 			
 				for (uint8_t i = 0; i < 5; i++)
@@ -242,7 +253,7 @@ static void selftest_task(void *pvParameters)
 					uint16_t threshold = eeprom_sensor_get_security_threshold(sensor_id);
 					if (threshold > 0 && threshold <= sensor->reading)
 					{
-						relay_fan_speed_2(true);
+						relay_fan_channel_2_enable(true);
 						break;
 					}
 				}
